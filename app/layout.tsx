@@ -29,7 +29,7 @@ export default function LandingLayout({
             {children}
           </AuthProvider>
         </ThemeProvider>
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID} />
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID!} />
       </body>
     </html>
   )

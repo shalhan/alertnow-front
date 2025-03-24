@@ -368,7 +368,7 @@ export default function LandingPage() {
       </section>
 
       {/* How it works */}
-      <section id="features" className="py-24 bg-white dark:bg-slate-900">
+      <section id="how-it-works" className="py-24 bg-white dark:bg-slate-900">
         <div className="container mx-auto px-4">
           <div className="text-center mb-24">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent inline-block">
@@ -476,7 +476,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="use-cases" className="py-24 relative overflow-hidden">
+      <section id="features" className="py-24 relative overflow-hidden">
         
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -613,7 +613,7 @@ export default function LandingPage() {
       </section>
 
       {/* Target Audience Section */}
-      <section className="py-12 md:py-20 bg-background">
+      <section id="use-cases" className="py-12 md:py-20 bg-background">
         <div className="container px-4 mx-auto">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="text-center mb-16">
