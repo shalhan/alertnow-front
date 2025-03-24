@@ -219,7 +219,7 @@ export default function Dashboard() {
                     showYAxis={true}
                     showGridLines={true}
                   />
-                  <ChartTooltip />
+                  {/* <ChartTooltip /> */}
                 </ChartContainer>
                 <ChartLegend
                   categories={["Critical", "Error", "Warning", "Info"]}
@@ -240,7 +240,7 @@ export default function Dashboard() {
                     showYAxis={true}
                     showGridLines={true}
                   />
-                  <ChartTooltip />
+                  {/* <ChartTooltip /> */}
                 </ChartContainer>
                 <ChartLegend
                   categories={["Critical", "Error", "Warning", "Info"]}
@@ -261,7 +261,7 @@ export default function Dashboard() {
                     showYAxis={true}
                     showGridLines={true}
                   />
-                  <ChartTooltip />
+                  {/* <ChartTooltip /> */}
                 </ChartContainer>
                 <ChartLegend
                   categories={["Critical", "Error", "Warning", "Info"]}

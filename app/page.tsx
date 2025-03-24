@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
+import { useInView } from 'react-intersection-observer';
 import Link from "next/link"
 import { AlertTriangle, ArrowRight, Check, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -20,6 +21,9 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Logo } from "@/components/ui/logo"
+import { Clock, Smile, Frown } from "lucide-react";
+import MockNotification from "@/components/ui/mock-notification";
+import { FaDiscord, FaSlack, FaTelegram } from "react-icons/fa"
 
 const plans = [
   {
@@ -93,6 +97,16 @@ export default function LandingPage() {
     company: "",
   })
   const [formSubmitted, setFormSubmitted] = useState(false)
+
+  const { ref: refLeft, inView: inViewLeft } = useInView({
+    threshold: 0.1,
+    triggerOnce: false
+  });
+  
+  const { ref: refRight, inView: inViewRight } = useInView({
+    threshold: 0.1,
+    triggerOnce: false
+  });
 
   const handleJoinWaitlist = (plan: string) => {
     if (plan != "") {
@@ -184,14 +198,14 @@ export default function LandingPage() {
               <Badge className="mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:from-violet-700 hover:to-indigo-700 px-3 py-1 text-sm">
                 Beta Soon
               </Badge>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
                 <span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-blue-600 bg-clip-text text-transparent">
-                Effortless Alerts, Seamless Monitoring
+                Stay Ahead of Issues 
                 </span>{" "}
-                Integrate in Minutes!
+                with Instant Alert
               </h1>
               <p className="text-xl text-slate-600 dark:text-slate-300">
-                Simple API for real-time alerts. Send notifications to email, Slack, or webhooks instantly. Easy setup, reliable, and built for developers!
+                Get real-time notifications on Discord, Slack, Telegram, SMS, or Email when something goes wrong
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button
@@ -208,9 +222,146 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="flex-1">
-              <div className="relative rounded-xl overflow-hidden shadow-2xl border border-indigo-100 dark:border-indigo-900/50">
+              <div className="relative lg:absolute lg:top-8 lg:rotate-[2deg] lg:h-[500px] lg:w-[920px] rounded-xl overflow-hidden shadow-2xl border border-indigo-100 dark:border-indigo-900/50">
                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-white/90 dark:from-indigo-950/50 dark:to-slate-900/90 backdrop-blur-sm z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <img src="/hiw2.png?height=600&width=800" alt="AlertNow Dashboard" className="w-full h-auto" />
+              </div>
+              <MockNotification 
+                className={"md:right-[10%] md:bottom-8"}
+                name={"Discord"}
+                timeout={200}
+                renderIcon={() => (
+                  <FaDiscord  aria-hidden="true" className="size-6 text-blue-800" />
+                )} />
+              <MockNotification 
+                className={"md:right-[10%] md:bottom-34"}
+                name={"Slack"}
+                timeout={300}
+                renderIcon={() => (
+                  <FaSlack  aria-hidden="true" className="size-6 text-red-500" />
+                )} />
+
+              <MockNotification 
+                className={"md:right-[10%] md:bottom-72"}
+                name={"Telegram"}
+                timeout={400}
+                renderIcon={() => (
+                  <FaTelegram  aria-hidden="true" className="size-6 text-blue-400" />
+                )} />
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      
+      {/* With and Without Section */ }
+      <section className="section py-24">
+        <div className="container mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 lg:gap-16 max-w-6xl mx-auto">
+            {/* Without AlertNow */}
+            <div 
+              className={`bg-slate-50 rounded-2xl p-8 border border-slate-200 transition-all duration-500 shadow-lg hover:shadow-xl`}
+            >
+              <div className="flex items-center mb-6">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-red-100 mr-4">
+                  <X size={20} className="text-red-500" />
+                </div>
+                <h3 className="text-xl font-semibold">Without AlertNow</h3>
+              </div>
+              
+              <div className="space-y-6">
+                <div className="flex">
+                  <div className="mt-1 mr-4">
+                    <Clock size={18} className="text-slate-400" />
+                  </div>
+                  <div>
+                    <p className="text-slate-800">
+                      <span className="font-medium">Morning surprise:</span> You wake up to 100+ angry customer emails.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex">
+                  <div className="mt-1 mr-4">
+                    <AlertTriangle size={18} className="text-slate-400" />
+                  </div>
+                  <div>
+                    <p className="text-slate-800">
+                      <span className="font-medium">Crisis mode:</span> Your API crashed overnight. No alerts.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex">
+                  <div className="mt-1 mr-4">
+                    <Frown size={18} className="text-slate-400" />
+                  </div>
+                  <div>
+                    <p className="text-slate-800">
+                      <span className="font-medium">Lost revenue:</span> Customers churning while you sleep.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-8 py-4 px-6 bg-red-50 rounded-lg border border-red-100">
+                <p className="text-red-700 text-sm">
+                  <span className="font-medium">Result:</span> Stress, lost revenue, and damaged reputation.
+                </p>
+              </div>
+            </div>
+            
+            {/* With AlertNow */}
+            <div 
+              className={`bg-white rounded-2xl p-8 border border-slate-200 transition-all duration-500 shadow-lg hover:shadow-xl` }
+            >
+              <div className="flex items-center mb-6">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-green-100 mr-4">
+                  <Check size={20} className="text-green-500" />
+                </div>
+                <h3 className="text-xl font-semibold">With AlertNow</h3>
+              </div>
+              
+              <div className="space-y-6">
+                <div className="flex">
+                  <div className="mt-1 mr-4">
+                    <Clock size={18} className="text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-slate-800">
+                      <span className="font-medium">Immediate notification:</span> Your phone buzzes at 2 AM with a precise alert.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex">
+                  <div className="mt-1 mr-4">
+                    <AlertTriangle size={18} className="text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-slate-800">
+                      <span className="font-medium">Quick response:</span> AlertNow detects the issue before users notice.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex">
+                  <div className="mt-1 mr-4">
+                    <Smile size={18} className="text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-slate-800">
+                      <span className="font-medium">Crisis averted:</span> You fix it in minutes, no customer impact.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-8 py-4 px-6 bg-primary/5 rounded-lg border border-primary/20">
+                <p className="text-primary text-sm">
+                  <span className="font-medium">Result:</span> Peace of mind, protected revenue, happy customers.
+                </p>
               </div>
             </div>
           </div>
@@ -253,7 +404,7 @@ export default function LandingPage() {
                     <img
                       src="/hiw4.png?height=300&width=800"
                       alt="Configure AlertNow Monitors"
-                      className="w-full h-auto object-cover"
+                      className="w-full h-auto object-cover scale-[2] origin-top"
                     />
                   </div>
                 </div>
@@ -325,7 +476,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Use Cases Section */}
+      {/* Features Section */}
       <section id="use-cases" className="py-24 relative overflow-hidden">
         
         <div className="container mx-auto px-4">
@@ -462,7 +613,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* How it Works Section */}
+      {/* Use case section */}
       <section className="py-24 bg-white dark:bg-slate-900">
 
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-violet-50/50 to-slate-50 dark:from-indigo-950/30 dark:via-violet-950/20 dark:to-slate-950/30 -z-10"></div>

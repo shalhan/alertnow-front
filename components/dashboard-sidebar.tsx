@@ -18,6 +18,7 @@ import {
 import { ModeToggle } from "@/components/mode-toggle"
 import { UserMenu } from "@/components/user-menu"
 import { useAuth } from "@/components/auth-provider"
+import { Logo } from "./ui/logo"
 
 const navItems = [
   {
@@ -70,7 +71,7 @@ export function DashboardSidebar() {
     <Sidebar>
       <SidebarHeader className="flex items-center justify-between">
         <div className="flex items-center gap-2 px-2">
-          <AlertTriangle className="h-6 w-6 text-primary" />
+          <Logo />
           <span className="text-lg font-bold">AlertNow</span>
         </div>
         <SidebarTrigger />
