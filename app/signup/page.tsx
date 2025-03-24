@@ -91,7 +91,7 @@ export default function SignupPage() {
       })
 
       const plan = searchParams.get("plan")
-      saveWaitingList({ id: userCredential.user.uid, name: formData.name, plan: plan as Plan })
+      await saveWaitingList({ id: userCredential.user.uid, name: formData.name, plan: plan as Plan })
 
       // Router will automatically redirect to dashboard via AuthProvider
     } catch (error: any) {
