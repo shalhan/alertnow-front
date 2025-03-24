@@ -5,7 +5,8 @@ import type React from "react"
 import { useState } from "react"
 import { useInView } from 'react-intersection-observer';
 import Link from "next/link"
-import { AlertTriangle, ArrowRight, Check, X } from "lucide-react"
+import { AlertTriangle, ArrowRight, Check, X, Clock, Smile, Frown, Zap, Settings, Users } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -21,41 +22,40 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Logo } from "@/components/ui/logo"
-import { Clock, Smile, Frown } from "lucide-react";
 import MockNotification from "@/components/ui/mock-notification";
 import { FaDiscord, FaSlack, FaTelegram } from "react-icons/fa"
 
 const plans = [
   {
-    name: "Free",
-    description: "For personal projects and testing",
-    price: "$0",
+    name: "Starter",
+    description: "For small projects and indie developers",
+    price: "$9",
     features: [
       "1 project",
       "1 environment",
-      "10 alerts/month",
-      "7-day event history",
-      "Discord notifications",
+      "1,000 alerts/month",
+      "14-day log retention",
+      "Slack & Email notifications",
       "Basic analytics"
     ],
     missingFeatures: [
-      "Telegram & Email notifications",
+      "Telegram & Discord notifications",
       "Webhooks",
-      "Custom alert rules",
       "Advanced analytics",
+      "Custom alert rules",
       "Priority support"
     ],
     isMostPopular: false
   },
   {
-    name: "Solo",
-    description: "For indie devs and growing projects",
-    price: "$9",
+    name: "Growth",
+    description: "For startups and small teams",
+    price: "$19",
     features: [
       "3 projects",
       "2 environments (Prod + Staging)",
       "5,000 alerts/month",
-      "30-day event history",
+      "30-day log retention",
       "Slack, Discord, Telegram & Email notifications",
       "Webhooks",
       "Basic analytics"
@@ -69,13 +69,13 @@ const plans = [
   },
   {
     name: "Pro",
-    description: "For teams & production apps",
+    description: "For growing teams & production apps",
     price: "$29",
     features: [
       "10 projects",
       "3 environments (Prod, Staging, Dev)",
       "20,000 alerts/month",
-      "90-day event history",
+      "90-day log retention",
       "Slack, Discord, Telegram, Email & Webhooks",
       "Advanced analytics",
       "Custom alert rules",
@@ -83,7 +83,6 @@ const plans = [
     ],
     missingFeatures: [],
     isMostPopular: false
-
   }
 ]
 
@@ -613,152 +612,64 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Use case section */}
-      <section className="py-24 bg-white dark:bg-slate-900">
-
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-violet-50/50 to-slate-50 dark:from-indigo-950/30 dark:via-violet-950/20 dark:to-slate-950/30 -z-10"></div>
-        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.015] -z-10"></div>
-        <div className="absolute bottom-0 left-0 right-0 h-80 bg-gradient-to-t from-white dark:from-slate-900 to-transparent -z-10"></div>
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent inline-block">
-              Perfect for Solo Founders
-            </h2>
-            <p className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              See how solo founders like you use AlertNow to stay on top of their business without the stress.
-            </p>
+      {/* Target Audience Section */}
+      <section className="py-12 md:py-20 bg-background">
+        <div className="container px-4 mx-auto">
+          <div className="flex flex-col items-center justify-center space-y-4 text-center">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent inline-block">
+              Who Is This For?
+              </h2>
+              <p className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+              Perfect For Your Business. AlertNow is designed specifically for these use cases
+              </p>
+            </div>
           </div>
-
-          <Tabs defaultValue="saas" className="max-w-4xl mx-auto">
-            <TabsList className="grid w-full grid-cols-3 bg-indigo-100/50 dark:bg-indigo-950/50 p-1">
-              <TabsTrigger value="saas" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800">
-                SaaS Founders
-              </TabsTrigger>
-              <TabsTrigger
-                value="ecommerce"
-                className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 text-ellipsis"
-              >
-                DevOps
-              </TabsTrigger>
-              <TabsTrigger
-                value="content"
-                className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800"
-              >
-                Freelancer
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="saas" className="mt-8">
-              <div className="flex flex-col md:flex-row gap-8 items-center">
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold mb-4 text-indigo-600 dark:text-indigo-400">SaaS Founders & Indie Hackers</h3>
-                  <p className="text-slate-600 dark:text-slate-300 mb-4">
-                    You're running a lean operation—every second counts. Get real-time alerts on app failures, server downtimes, and API errors before users notice. No complex setup, just instant notifications when things break.
-                  </p>
-                  <ul className="space-y-2">
-                    <li className="flex items-start gap-2">
-                      <span className="text-slate-600 dark:text-slate-300">
-                        ⚡ Get real-time alerts before your users notice issues
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-slate-600 dark:text-slate-300">
-                        ⏳ No complex setup—just plug and play
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-slate-600 dark:text-slate-300">
-                        📉 Avoid revenue loss from unexpected downtime
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="flex-1">
-                  <div className="rounded-lg overflow-hidden shadow-lg border border-indigo-100 dark:border-indigo-900/50">
-                    <img
-                      src="/img1.jpg?height=400&width=600"
-                      alt="SaaS Founder Use Case"
-                      className="w-full h-auto"
-                    />
+          <div className="mx-auto grid max-w-5xl gap-6 py-12 md:grid-cols-3">
+            <div className="relative p-1">
+              <div className="absolute inset-0 bg-gradient-to-r border border-slate-200 shadow-lg"></div>
+              <Card className="relative bg-white rounded-lg">
+                <CardContent className="p-6">
+                  <div className="flex flex-col items-center gap-4 text-center">
+                    <Users className="h-12 w-12 text-violet-600" />
+                    <h3 className="text-xl font-bold">Solo Founders</h3>
+                    <p className="text-muted-foreground">
+                      Who can't afford downtime and need to maximize their efficiency.
+                    </p>
                   </div>
-                </div>
-              </div>
-            </TabsContent>
+                </CardContent>
+              </Card>
+            </div>
 
-            <TabsContent value="ecommerce" className="mt-8">
-              <div className="flex flex-col md:flex-row gap-8 items-center">
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold mb-4 text-indigo-600 dark:text-indigo-400">Developers & DevOps Engineers</h3>
-                  <p className="text-slate-600 dark:text-slate-300 mb-4">
-                    Monitor logs, system health, and uptime effortlessly. Our lightweight alerting system ensures you're always in control, without the hassle of enterprise-level complexity. Set up in minutes, stay informed forever
-                  </p>
-                  <ul className="space-y-2">
-                    <li className="flex items-start gap-2">
-                      <span className="text-slate-600 dark:text-slate-300">
-                        🛠️ Monitor logs, system health, and uptime effortlessly
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-slate-600 dark:text-slate-300">
-                        🚀 Lightweight & fast—set up in minutes, not hours
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-slate-600 dark:text-slate-300">
-                        🔔 Get alerts via Slack, email, or webhooks instantly
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="flex-1">
-                  <div className="rounded-lg overflow-hidden shadow-lg border border-indigo-100 dark:border-indigo-900/50">
-                    <img
-                      src="/img2.jpg?height=400&width=600"
-                      alt="E-commerce Founder Use Case"
-                      className="w-full h-auto"
-                    />
+            <div className="relative p-1">
+              <div className="absolute inset-0 bg-gradient-to-r border border-slate-200 shadow-lg"></div>
+              <Card className="relative bg-white rounded-lg">
+                <CardContent className="p-6">
+                  <div className="flex flex-col items-center gap-4 text-center">
+                    <Zap className="h-12 w-12 text-violet-600" />
+                    <h3 className="text-xl font-bold">Indie Hackers</h3>
+                    <p className="text-muted-foreground">Who want peace of mind while scaling their products.</p>
                   </div>
-                </div>
-              </div>
-            </TabsContent>
+                </CardContent>
+              </Card>
+            </div>
 
-            <TabsContent value="content" className="mt-8">
-              <div className="flex flex-col md:flex-row gap-8 items-center">
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold mb-4 text-indigo-600 dark:text-indigo-400">Consultants & Agencies</h3>
-                  <p className="text-slate-600 dark:text-slate-300 mb-4">
-                    Managing multiple client projects? Keep track of every site, API, and system in one dashboard. Provide proactive alerts to clients and ensure smooth operations—without constantly checking dashboards.
-                  </p>
-                  <ul className="space-y-2">
-                    <li className="flex items-start gap-2">
-                      <span className="text-slate-600 dark:text-slate-300">
-                        🔄 Track multiple client projects in one place
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-slate-600 dark:text-slate-300">
-                        ✅ Ensure smooth operations with proactive alerting
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-slate-600 dark:text-slate-300">
-                        📊 Impress clients with real-time monitoring and insights
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="flex-1">
-                  <div className="rounded-lg overflow-hidden shadow-lg border border-indigo-100 dark:border-indigo-900/50">
-                    <img
-                      src="/img3.jpg?height=400&width=600"
-                      alt="Content Creator Use Case"
-                      className="w-full h-auto"
-                    />
+            
+            <div className="relative p-1">
+              <div className="absolute inset-0 bg-gradient-to-r border border-slate-200 shadow-lg"></div>
+              <Card className="relative bg-white rounded-lg">
+                <CardContent className="p-6">
+                  <div className="flex flex-col items-center gap-4 text-center">
+                    <Settings className="h-12 w-12 text-violet-600" />
+                    <h3 className="text-xl font-bold">SaaS & API Businesses</h3>
+                    <p className="text-muted-foreground">
+                      Needing real-time monitoring to maintain service reliability.
+                    </p>
                   </div>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </section>
 
