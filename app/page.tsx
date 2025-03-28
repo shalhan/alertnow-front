@@ -35,7 +35,7 @@ const plans = [
       "1 environment",
       "1,000 alerts/month",
       "14-day log retention",
-      "Slack & Email notifications",
+      "Discord notifications",
       "Basic analytics"
     ],
     missingFeatures: [
@@ -56,7 +56,7 @@ const plans = [
       "2 environments (Prod + Staging)",
       "5,000 alerts/month",
       "30-day log retention",
-      "Slack, Discord, Telegram & Email notifications",
+      "Slack, Discord & Telegram notifications",
       "Webhooks",
       "Basic analytics"
     ],
@@ -86,6 +86,57 @@ const plans = [
   }
 ]
 
+const features = [
+  {
+    icon: "🔔",
+    title: "Real-time Alerts",
+    description: "Get notified instantly when issues arise.",
+    details: "Configure alerts based on thresholds, patterns, or anomalies. Receive notifications via email, Slack, and more.",
+    gradient: "from-white to-indigo-50/30 dark:from-slate-900 dark:to-indigo-950/30",
+    accent: "from-indigo-500/20"
+  },
+  {
+    icon: "⚡",
+    description: "Automate your alert workflow.",
+    title: "Smart Rules & Automations",
+    details: "Define complex conditions and actions for routing alerts. Escalate unresolved issues and automate remediation steps.",
+    gradient: "from-white to-violet-50/30 dark:from-slate-900 dark:to-violet-950/30",
+    accent: "from-violet-500/20"
+  },
+  {
+    icon: "📊",
+    title: "Comprehensive Dashboard",
+    description: "Visualize and manage all alerts in one place.",
+    details: "Customizable dashboards, detailed alert history, and powerful filtering capabilities.",
+    gradient: "from-white to-teal-50/30 dark:from-slate-900 dark:to-teal-950/30",
+    accent: "from-teal-500/20"
+  },
+  {
+    icon: "🤝",
+    title: "Team Collaboration",
+    description: "Assign alerts to team members.",
+    details: "Add comments and track resolution progress. Shared visibility to keep everyone informed.",
+    gradient: "from-white to-amber-50/30 dark:from-slate-900 dark:to-amber-950/30",
+    accent: "from-amber-500/20"
+  },
+  {
+    icon: "📈",
+    title: "Historical Analysis",
+    description: "Learn from past incidents.",
+    details: "Analyze alert patterns over time. Measure response effectiveness with detailed metrics.",
+    gradient: "from-white to-cyan-50/30 dark:from-slate-900 dark:to-cyan-950/30",
+    accent: "from-cyan-500/20"
+  },
+  {
+    icon: "🔌",
+    title: "Seamless Integrations",
+    description: "Connect with existing tools and workflows.",
+    details: "Integrate with monitoring tools, communication platforms, and ticketing systems. Use the API for custom integrations.",
+    gradient: "from-white to-rose-50/30 dark:from-slate-900 dark:to-rose-950/30",
+    accent: "from-rose-500/20"
+  }
+];
+
 
 export default function LandingPage() {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
@@ -110,9 +161,10 @@ export default function LandingPage() {
   const handleJoinWaitlist = (plan: string) => {
     if (plan != "") {
       window.location.href = "/signup?plan=" +  plan.toLowerCase()
+    } else {
+      window.location.href = "/signup"
     }
 
-    window.location.href = "/signup"
     // setSelectedPlan(plan)
     // setShowWaitlistModal(true)
   }
@@ -198,13 +250,13 @@ export default function LandingPage() {
                 Beta Soon
               </Badge>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
+                Tired of Missing {" "}
                 <span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-blue-600 bg-clip-text text-transparent">
-                Stay Ahead of Issues 
-                </span>{" "}
-                with Instant Alert
+                 Critical Alerts? 
+                </span>
               </h1>
               <p className="text-xl text-slate-600 dark:text-slate-300">
-                Get real-time notifications on Discord, Slack, Telegram, SMS, or Email when something goes wrong
+                Get Instant Notifications in Discord, Slack, and More—Directly from Your Code!
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button
@@ -258,9 +310,10 @@ export default function LandingPage() {
       <section className="section py-24">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-2 gap-8 lg:gap-16 max-w-6xl mx-auto">
+            
             {/* Without AlertNow */}
             <div 
-              className={`bg-slate-50 rounded-2xl p-8 border border-slate-200 transition-all duration-500 shadow-lg hover:shadow-xl`}
+              className="bg-slate-50 rounded-2xl p-8 border border-slate-200 transition-all duration-500 shadow-lg hover:shadow-xl"
             >
               <div className="flex items-center mb-6">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center bg-red-100 mr-4">
@@ -276,7 +329,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <p className="text-slate-800">
-                      <span className="font-medium">Morning surprise:</span> You wake up to 100+ angry customer emails.
+                      <span className="font-medium">Delayed response:</span> Issues go unnoticed until customers complain.
                     </p>
                   </div>
                 </div>
@@ -287,7 +340,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <p className="text-slate-800">
-                      <span className="font-medium">Crisis mode:</span> Your API crashed overnight. No alerts.
+                      <span className="font-medium">Scattered alerts:</span> Messages lost in Slack, emails ignored, no central hub.
                     </p>
                   </div>
                 </div>
@@ -298,7 +351,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <p className="text-slate-800">
-                      <span className="font-medium">Lost revenue:</span> Customers churning while you sleep.
+                      <span className="font-medium">No prioritization:</span> Critical alerts buried under noise, slow incident handling.
                     </p>
                   </div>
                 </div>
@@ -306,14 +359,14 @@ export default function LandingPage() {
               
               <div className="mt-8 py-4 px-6 bg-red-50 rounded-lg border border-red-100">
                 <p className="text-red-700 text-sm">
-                  <span className="font-medium">Result:</span> Stress, lost revenue, and damaged reputation.
+                  <span className="font-medium">Result:</span> Missed alerts, delayed fixes, and unhappy customers.
                 </p>
               </div>
             </div>
             
             {/* With AlertNow */}
             <div 
-              className={`bg-white rounded-2xl p-8 border border-slate-200 transition-all duration-500 shadow-lg hover:shadow-xl` }
+              className="bg-white rounded-2xl p-8 border border-slate-200 transition-all duration-500 shadow-lg hover:shadow-xl"
             >
               <div className="flex items-center mb-6">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center bg-green-100 mr-4">
@@ -329,7 +382,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <p className="text-slate-800">
-                      <span className="font-medium">Immediate notification:</span> Your phone buzzes at 2 AM with a precise alert.
+                      <span className="font-medium">Real-time monitoring:</span> Instantly detect issues before users notice.
                     </p>
                   </div>
                 </div>
@@ -340,7 +393,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <p className="text-slate-800">
-                      <span className="font-medium">Quick response:</span> AlertNow detects the issue before users notice.
+                      <span className="font-medium">Smart alert routing:</span> Define rules to send alerts to the right team & channel.
                     </p>
                   </div>
                 </div>
@@ -351,7 +404,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <p className="text-slate-800">
-                      <span className="font-medium">Crisis averted:</span> You fix it in minutes, no customer impact.
+                      <span className="font-medium">Centralized dashboard:</span> View, track, and manage alerts in one place.
                     </p>
                   </div>
                 </div>
@@ -359,13 +412,15 @@ export default function LandingPage() {
               
               <div className="mt-8 py-4 px-6 bg-primary/5 rounded-lg border border-primary/20">
                 <p className="text-primary text-sm">
-                  <span className="font-medium">Result:</span> Peace of mind, protected revenue, happy customers.
+                  <span className="font-medium">Result:</span> Faster response, fewer incidents, and happy customers.
                 </p>
               </div>
             </div>
+
           </div>
         </div>
       </section>
+
 
       {/* How it works */}
       <section id="how-it-works" className="py-24 bg-white dark:bg-slate-900">
@@ -392,12 +447,17 @@ export default function LandingPage() {
               <div className="pl-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-4">
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Set Up Your Monitors</h3>
+
+                 
+
+
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white"> Define Your Alert Rules</h3>
                     <p className="text-slate-600 dark:text-slate-300">
-                      Configure monitors for your key metrics and services with our intuitive dashboard. Define
-                      thresholds, conditions, and patterns to watch for, and customize how you want to be notified when
-                      issues arise.
+                      Use the AlertNow Dashboard to set up rules that decide where and when alerts should be sent.
                     </p>
+                    <p className="text-slate-600 dark:text-slate-300 mb-0">✅ Send critical errors to the engineering Slack channel</p>
+                    <p className="text-slate-600 dark:text-slate-300 mb-0">✅ Forward payment failures to the finance team’s Telegram group</p>
+                    <p className="text-slate-600 dark:text-slate-300 mb-0">✅ Route customer issues to Microsoft Teams</p>
                   </div>
                   <div className="rounded-lg overflow-hidden shadow-lg border border-indigo-100 dark:border-indigo-900/50">
                     <img
@@ -429,15 +489,13 @@ export default function LandingPage() {
                   </div>
                   
                   <div className="space-y-4">
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Call Our Library</h3>
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Integrate in Seconds</h3>
                     <p className="text-slate-600 dark:text-slate-300">
-                      Integrate our lightweight SDK into your application with just a few lines of code. Our library
-                      works with all major programming languages and frameworks, making it easy to add alert
-                      capabilities to your existing systems.
+                      Simply install the AlertNow SDK or call the API directly from your code. No complex setup required.
                     </p>
                     <div className="bg-slate-100 dark:bg-slate-800 rounded-md p-4 font-mono text-sm overflow-x-auto">
                       <code className="text-indigo-600 dark:text-indigo-400">
-                        alertNow.send("critical", "Database connection failed");
+                        alertNow.error("Something wrong when creating order");
                       </code>
                     </div>
                   </div>
@@ -454,11 +512,9 @@ export default function LandingPage() {
               <div className="pl-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-4">
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Receive Smart Alerts</h3>
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Instant Alerts, Right Where You Need Them</h3>
                     <p className="text-slate-600 dark:text-slate-300">
-                      Get notified via <strong>email, Slack, Discord, SMS, or other channels</strong> when issues arise, and resolve them quickly.
-                      Our intelligent alert system reduces noise by grouping related alerts and suggesting potential
-                      solutions.
+                      When an alert is triggered, AlertNow automatically distributes it to the correct platform (Discord, Slack, Telegram, MS Teams, etc.), ensuring the right people get notified instantly.
                     </p>
                   </div>
                   <div className="rounded-lg overflow-hidden p-6">
@@ -477,140 +533,39 @@ export default function LandingPage() {
 
       {/* Features Section */}
       <section id="features" className="py-24 relative overflow-hidden">
-        
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent inline-block">
-              Powerful Features
-            </h2>
-            <p className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Everything you need to monitor your systems and respond to issues quickly and effectively.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 relative bg-gradient-to-br from-white to-indigo-50/30 dark:from-slate-900 dark:to-indigo-950/30">
-              <div className="absolute top-0 right-0 bottom-0 w-24 bg-gradient-to-l from-indigo-500/20 to-transparent"></div>
-              <CardHeader className="relative z-10">
-                <div className="text-4xl mb-4 bg-gradient-to-br from-indigo-500 to-blue-500 text-white w-12 h-12 rounded-lg flex items-center justify-center">
-                  🔔
-                </div>
-                <CardTitle className="text-xl">Real-time Alerts</CardTitle>
-                <CardDescription className="text-slate-600 dark:text-slate-400">
-                  Get notified instantly when issues arise in your systems.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="relative z-10">
-                <p className="text-slate-600 dark:text-slate-400">
-                  Configure alerts based on thresholds, patterns, or anomalies. Receive notifications through multiple
-                  channels including email, Slack, and more.
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Feature 2 */}
-            <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 relative bg-gradient-to-br from-white to-violet-50/30 dark:from-slate-900 dark:to-violet-950/30">
-              <div className="absolute top-0 right-0 bottom-0 w-24 bg-gradient-to-l from-violet-500/20 to-transparent"></div>
-              <CardHeader className="relative z-10">
-                <div className="text-4xl mb-4 bg-gradient-to-br from-violet-500 to-purple-500 text-white w-12 h-12 rounded-lg flex items-center justify-center">
-                  ⚡
-                </div>
-                <CardTitle className="text-xl">Smart Rules & Automations</CardTitle>
-                <CardDescription className="text-slate-600 dark:text-slate-400">
-                  Create powerful rules to automate your alert workflow.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="relative z-10">
-                <p className="text-slate-600 dark:text-slate-400">
-                  Define complex conditions and actions to route alerts to the right teams, escalate unresolved issues,
-                  and automate remediation steps.
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Feature 3 */}
-            <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 relative bg-gradient-to-br from-white to-teal-50/30 dark:from-slate-900 dark:to-teal-950/30">
-              <div className="absolute top-0 right-0 bottom-0 w-24 bg-gradient-to-l from-teal-500/20 to-transparent"></div>
-              <CardHeader className="relative z-10">
-                <div className="text-4xl mb-4 bg-gradient-to-br from-teal-500 to-emerald-500 text-white w-12 h-12 rounded-lg flex items-center justify-center">
-                  📊
-                </div>
-                <CardTitle className="text-xl">Comprehensive Dashboard</CardTitle>
-                <CardDescription className="text-slate-600 dark:text-slate-400">
-                  Visualize and manage all your alerts in one place.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="relative z-10">
-                <p className="text-slate-600 dark:text-slate-400">
-                  Get a bird's-eye view of your system health with customizable dashboards, detailed alert history, and
-                  powerful filtering capabilities.
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Feature 4 */}
-            <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 relative bg-gradient-to-br from-white to-amber-50/30 dark:from-slate-900 dark:to-amber-950/30">
-              <div className="absolute top-0 right-0 bottom-0 w-24 bg-gradient-to-l from-amber-500/20 to-transparent"></div>
-              <CardHeader className="relative z-10">
-                <div className="text-4xl mb-4 bg-gradient-to-br from-amber-500 to-orange-500 text-white w-12 h-12 rounded-lg flex items-center justify-center">
-                  🤝
-                </div>
-                <CardTitle className="text-xl">Team Collaboration</CardTitle>
-                <CardDescription className="text-slate-600 dark:text-slate-400">
-                  Work together to resolve issues faster.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="relative z-10">
-                <p className="text-slate-600 dark:text-slate-400">
-                  Assign alerts to team members, add comments, and track resolution progress. Keep everyone in the loop
-                  with shared alert visibility.
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Feature 5 */}
-            <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 relative bg-gradient-to-br from-white to-cyan-50/30 dark:from-slate-900 dark:to-cyan-950/30">
-              <div className="absolute top-0 right-0 bottom-0 w-24 bg-gradient-to-l from-cyan-500/20 to-transparent"></div>
-              <CardHeader className="relative z-10">
-                <div className="text-4xl mb-4 bg-gradient-to-br from-cyan-500 to-blue-500 text-white w-12 h-12 rounded-lg flex items-center justify-center">
-                  📈
-                </div>
-                <CardTitle className="text-xl">Historical Analysis</CardTitle>
-                <CardDescription className="text-slate-600 dark:text-slate-400">
-                  Learn from past incidents to prevent future ones.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="relative z-10">
-                <p className="text-slate-600 dark:text-slate-400">
-                  Analyze alert patterns over time, identify recurring issues, and measure your team's response
-                  effectiveness with detailed metrics.
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Feature 6 */}
-            <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 relative bg-gradient-to-br from-white to-rose-50/30 dark:from-slate-900 dark:to-rose-950/30">
-              <div className="absolute top-0 right-0 bottom-0 w-24 bg-gradient-to-l from-rose-500/20 to-transparent"></div>
-              <CardHeader className="relative z-10">
-                <div className="text-4xl mb-4 bg-gradient-to-br from-rose-500 to-pink-500 text-white w-12 h-12 rounded-lg flex items-center justify-center">
-                  🔌
-                </div>
-                <CardTitle className="text-xl">Seamless Integrations</CardTitle>
-                <CardDescription className="text-slate-600 dark:text-slate-400">
-                  Connect with your existing tools and workflows.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="relative z-10">
-                <p className="text-slate-600 dark:text-slate-400">
-                  Integrate with popular monitoring tools, communication platforms, and ticketing systems. Use our API
-                  to build custom integrations.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent inline-block">
+            Powerful Features
+          </h2>
+          <p className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+            Everything you need to monitor your systems and respond to issues quickly and effectively.
+          </p>
         </div>
-      </section>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature, index) => (
+            <Card key={index} className={`group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 relative bg-gradient-to-br ${feature.gradient}`}>
+              <div className={`absolute top-0 right-0 bottom-0 w-24 bg-gradient-to-l ${feature.accent} to-transparent`}></div>
+              <CardHeader className="relative z-10">
+                <div className="text-4xl mb-4 bg-gradient-to-br text-white w-12 h-12 rounded-lg flex items-center justify-center">
+                  {feature.icon}
+                </div>
+                <CardTitle className="text-xl">{feature.title}</CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400">
+                  {feature.description}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="relative z-10">
+                <p className="text-slate-600 dark:text-slate-400">
+                  {feature.details}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
 
       {/* Target Audience Section */}
       <section id="use-cases" className="py-12 md:py-20 bg-background">

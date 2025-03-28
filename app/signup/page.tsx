@@ -36,6 +36,7 @@ export default function SignupPage() {
     general: "",
   })
   const searchParams = useSearchParams()
+  const plan = searchParams.get("plan")
 
   const validateForm = () => {
     let isValid = true
@@ -90,7 +91,6 @@ export default function SignupPage() {
         description: "Welcome to AlertNow! Your account has been created successfully.",
       })
 
-      const plan = searchParams.get("plan")
       await saveWaitingList({ id: userCredential.user.uid, name: formData.name, plan: plan as Plan })
 
       // Router will automatically redirect to dashboard via AuthProvider
@@ -151,6 +151,7 @@ export default function SignupPage() {
         description: "Welcome to AlertNow! Your account has been created successfully.",
       })
 
+      await saveWaitingList({ id: auth.currentUser?.uid || "", name: auth.currentUser?.displayName || "", plan: plan as Plan })
       // Router will automatically redirect to dashboard via AuthProvider
     } catch (error: any) {
       console.error("Google signup error:", error)
