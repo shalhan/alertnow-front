@@ -31,7 +31,7 @@ const plans = [
     description: "For small projects and indie developers",
     price: "$9",
     features: [
-      "1 project",
+      "3 projects",
       "1 environment",
       "1,000 alerts/month",
       "14-day log retention",
@@ -52,7 +52,7 @@ const plans = [
     description: "For startups and small teams",
     price: "$19",
     features: [
-      "3 projects",
+      "5 projects",
       "2 environments (Prod + Staging)",
       "5,000 alerts/month",
       "30-day log retention",
@@ -680,7 +680,7 @@ export default function LandingPage() {
                     onClick={() => handleJoinWaitlist(plan.name)}
                     className="w-full bg-gradient-to-r from-violet-500 to-indigo-500 hover:from-violet-600 hover:to-indigo-600 dark:text-slate-300"
                   >
-                    Choose {plan.name}
+                    Start Free Trial
                   </Button>
                 </CardFooter>
               </Card>
