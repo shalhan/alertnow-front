@@ -1,25 +1,22 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
 import Link from "next/link"
-import { useParams, useRouter, useSearchParams } from "next/navigation"
-import { AlertTriangle, ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react"
+import { BellRing, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { addDoc, collection, serverTimestamp } from "firebase/firestore"
+import { useSearchParams } from "next/navigation"
+import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
-import { auth, googleProvider, db } from "@/lib/firebase"
 import { createUserWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth"
+import { auth, googleProvider, db } from "@/lib/firebase"
 import { Logo } from "@/components/ui/logo"
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 type Plan = 'free' | 'solo' | 'pro' | 'enterprise'
 
-export default function SignupPage() {
-  const router = useRouter()
+export default function SignUpPage() {
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
@@ -176,153 +173,113 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
-      {/* Left side - Signup form */}
-      <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-        <div className="mx-auto w-full max-w-sm lg:w-96">
-          <div className="flex items-center gap-2 mb-8">
+    <div className="flex min-h-screen flex-col">
+      <header className="sticky top-0 z-40 border-b bg-background">
+        <div className="container flex h-16 items-center justify-between py-4">
+          <div className="flex items-center gap-2">
             <Logo />
-            <Link href="/" className="text-lg font-bold">
+            <Link href="/" className="text-xl font-bold">
               AlertNow
             </Link>
           </div>
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight">Create your account</h2>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-              Already have an account?{" "}
-              <Link href="/login" className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
-                Sign in
-              </Link>
-            </p>
+          <div className="flex items-center gap-4">
+            <Button variant="outline" asChild>
+              <Link href="/login">Login</Link>
+            </Button>
           </div>
-
-          <div className="mt-8">
-            <div className="mt-6">
-              {errors.general && (
-                <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm rounded-md">
-                  {errors.general}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <Label htmlFor="name" className="block text-sm font-medium">
-                    Full name
-                  </Label>
-                  <div className="mt-1">
-                    <Input
-                      id="name"
-                      name="name"
-                      type="text"
-                      autoComplete="name"
-                      required
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className={errors.name ? "border-red-500" : ""}
-                    />
-                    {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="email" className="block text-sm font-medium">
-                    Email address
-                  </Label>
-                  <div className="mt-1">
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      required
-                      value={formData.email}
+        </div>
+      </header>
+      <main className="flex-1 flex items-center justify-center p-4 md:p-8">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
+            <CardDescription>Enter your information to get started with AlertNow</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-2">
+              <div className="space-y-1">
+                <label
+                  htmlFor="name"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Name
+                </label>
+                <Input id="name" placeholder="John" autoComplete="given-name" value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className={errors.name ? "border-red-500" : ""} />
+                  {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
+              </div>
+              <div className="space-y-1">
+                <label
+                  htmlFor="email"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Email
+                </label>
+                <Input id="email" type="email" placeholder="name@example.com" autoComplete="email" value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className={errors.email ? "border-red-500" : ""}
-                    />
-                    {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="password" className="block text-sm font-medium">
-                    Password
-                  </Label>
-                  <div className="mt-1 relative">
-                    <Input
-                      id="password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      autoComplete="new-password"
-                      required
+                      className={errors.email ? "border-red-500" : ""} />
+                      {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+              </div>
+              <div className="space-y-1">
+                <label
+                  htmlFor="password"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Password
+                </label>
+                <Input id="password" type="password" placeholder="" autoComplete="new-password"  required
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className={errors.password ? "border-red-500 pr-10" : "pr-10"}
-                    />
-                    <button
-                      type="button"
-                      className="absolute inset-y-0 right-0 flex items-center pr-3"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-slate-400" />
-                      ) : (
-                        <Eye className="h-4 w-4 text-slate-400" />
-                      )}
-                    </button>
-                    {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
-                  </div>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    Password must be at least 8 characters
-                  </p>
-                </div>
-
-                <div className="flex items-center">
-                  <input
-                    id="terms"
-                    name="terms"
-                    type="checkbox"
-                    required
-                    className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600"
-                  />
-                  <Label htmlFor="terms" className="ml-2 block text-sm">
-                    I agree to the{" "}
-                    <Link href="/terms" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
-                      Terms of Service
-                    </Link>{" "}
-                    and{" "}
-                    <Link href="/privacy" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
-                      Privacy Policy
-                    </Link>
-                  </Label>
-                </div>
-
-                <div>
-                  <Button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-                  >
-                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Create account
-                  </Button>
-                </div>
-              </form>
-            </div>
-
-            <div className="mt-6">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <Separator className="w-full" />
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="bg-slate-50 px-2 text-slate-500 dark:bg-slate-950 dark:text-slate-400">
-                    Or continue with
-                  </span>
-                </div>
+                      className={errors.password ? "border-red-500 pr-10" : "pr-10"}/>
+                <p className="text-xs text-muted-foreground mt-1">Password must be at least 8 characters long</p>
+                {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
               </div>
-
-              <div className="mt-6">
-                <Button onClick={handleGoogleSignup} disabled={isGoogleLoading} variant="outline" className="w-full">
+              <div className="space-y-1">
+                <label
+                  htmlFor="confirm-password"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Confirm Password
+                </label>
+                <Input id="confirm-password" type="password" placeholder="" autoComplete="new-password" required />
+              </div>
+              {/* <div className="flex items-start space-x-2 pt-2">
+                <Checkbox id="terms" className="mt-1" />
+                <label
+                  htmlFor="terms"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  I agree to the{" "}
+                  <Link href="/terms" className="text-primary hover:underline">
+                    terms of service
+                  </Link>{" "}
+                  and{" "}
+                  <Link href="/privacy" className="text-primary hover:underline">
+                    privacy policy
+                  </Link>
+                </label>
+              </div> */}
+              
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full mt-8"
+              >
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Create account
+              </Button>
+            </form>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Or</span>
+              </div>
+            </div>
+            <div>
+            <Button onClick={handleGoogleSignup} disabled={isGoogleLoading} variant="outline" className="w-full">
                   {isGoogleLoading ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : (
@@ -348,40 +305,34 @@ export default function SignupPage() {
                   )}
                   Sign up with Google
                 </Button>
-              </div>
             </div>
+          </CardContent>
+          <CardFooter className="flex flex-col items-center justify-center space-y-2">
+            <div className="text-sm text-muted-foreground">
+              Already have an account?{" "}
+              <Link href="/login" className="text-primary hover:underline">
+                Login
+              </Link>
+            </div>
+          </CardFooter>
+        </Card>
+      </main>
+      <footer className="border-t py-4">
+        <div className="container flex flex-col items-center justify-center gap-2 text-center md:flex-row md:justify-between">
+          <div className="flex items-center gap-2">
+            <Logo />
+            <p className="text-sm text-muted-foreground">© 2025 AlertNow. All rights reserved.</p>
+          </div>
+          <div className="flex gap-4">
+            <Link href="#" className="text-sm text-muted-foreground hover:underline underline-offset-4">
+              Terms
+            </Link>
+            <Link href="#" className="text-sm text-muted-foreground hover:underline underline-offset-4">
+              Privacy
+            </Link>
           </div>
         </div>
-      </div>
-
-      {/* Right side - Image */}
-      <div className="relative hidden w-0 flex-1 lg:block">
-        <div className="absolute inset-0 h-full w-full bg-gradient-to-br from-indigo-600 to-blue-600">
-          <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03]"></div>
-          <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_500px_at_50%_200px,rgba(120,119,198,0.3),transparent)]"></div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="max-w-md text-center text-white">
-              <div className="mb-6 flex justify-center">
-                <Logo className="rounded-full bg-slate-100 p-4 backdrop-blur-sm"/>
-              </div>
-              <h2 className="text-3xl font-bold mb-4">Join AlertNow today</h2>
-              <p className="text-lg text-white/80 mb-6">
-                Get started with intelligent alerts and powerful automations for your systems
-              </p>
-              <Button
-                variant="outline"
-                className="bg-white/10 text-white border-white/20 backdrop-blur-sm hover:bg-white/20"
-                asChild
-              >
-                <Link href="/">
-                  Explore features
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+      </footer>
     </div>
   )
 }

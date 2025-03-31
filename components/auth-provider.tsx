@@ -35,20 +35,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (user) {
         // If user is logged in and trying to access auth pages, redirect to dashboard
         if (pathname === "/login" || pathname === "/signup" || pathname === "/forgot-password") {
-          router.push("/cooming-soon")
+          router.push("/d/dashboard")
         }
       } else {
         // If user is not logged in and trying to access protected pages, redirect to login
         // Add your protected routes here
         const protectedRoutes = [
-          "/dashboard",
-          "/alerts",
-          "/integrations",
-          "/alert-rules",
-          "/api-docs",
-          "/api-keys",
-          "/team",
-          "/settings",
+          "/d/dashboard",
+          "/d/alert-rules",
+          "/d/api-keys",
+          "/d/team",
+          "/d/settings",
         ]
         if (protectedRoutes.includes(pathname)) {
           router.push("/login")

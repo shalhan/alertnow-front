@@ -1,15 +1,13 @@
 "use client"
 
 import type React from "react"
-
+import { BellRing, Loader2 } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { AlertTriangle, ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
 import { auth, googleProvider } from "@/lib/firebase"
 import {
@@ -19,10 +17,10 @@ import {
   browserLocalPersistence,
   browserSessionPersistence,
 } from "firebase/auth"
+import { Label } from "@/components/ui/label"
 import { Logo } from "@/components/ui/logo"
 
 export default function LoginPage() {
-  const router = useRouter()
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
@@ -150,135 +148,92 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
-      {/* Left side - Login form */}
-      <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-        <div className="mx-auto w-full max-w-sm lg:w-96">
-          <div className="flex items-center gap-2 mb-8">
+    <div className="flex min-h-screen flex-col">
+      <header className="sticky top-0 z-40 border-b bg-background">
+        <div className="container flex h-16 items-center justify-between py-4">
+          <div className="flex items-center gap-2">
             <Logo />
-            <Link href="/" className="text-lg font-bold">
+            <Link href="/" className="text-xl font-bold">
               AlertNow
             </Link>
           </div>
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight">Sign in to your account</h2>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-              Don't have an account?{" "}
-              <Link href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
-                Sign up
-              </Link>
-            </p>
+          <div className="flex items-center gap-4">
+            <Button variant="outline" asChild>
+              <Link href="/signup">Sign Up</Link>
+            </Button>
           </div>
-
-          <div className="mt-8">
-            <div className="mt-6">
-              {errors.general && (
-                <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm rounded-md">
-                  {errors.general}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <Label htmlFor="email" className="block text-sm font-medium">
-                    Email address
-                  </Label>
-                  <div className="mt-1">
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      required
+        </div>
+      </header>
+      <main className="flex-1 flex items-center justify-center p-4 md:p-8">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold">Login to AlertNow</CardTitle>
+            <CardDescription>Enter your credentials to access your account</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <form onSubmit={handleSubmit} >
+            <div className="space-y-6">
+              <div className="space-y-1">
+                <label
+                  htmlFor="email"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Email
+                </label>
+                <Input id="email" type="email" placeholder="name@example.com" autoComplete="email"  required
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className={errors.email ? "border-red-500" : ""}
-                    />
+                      className={errors.email ? "border-red-500" : ""} />
                     {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
-                  </div>
-                </div>
 
-                <div>
-                  <Label htmlFor="password" className="block text-sm font-medium">
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label
+                    htmlFor="password"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
                     Password
-                  </Label>
-                  <div className="mt-1 relative">
-                    <Input
-                      id="password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      autoComplete="current-password"
-                      required
+                  </label>
+                  <Link href="/forgot-password" className="text-sm text-primary hover:underline">
+                    Forgot password?
+                  </Link>
+                </div>
+                <Input id="password" type="password" placeholder="" autoComplete="current-password" required
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className={errors.password ? "border-red-500 pr-10" : "pr-10"}
-                    />
-                    <button
-                      type="button"
-                      className="absolute inset-y-0 right-0 flex items-center pr-3"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-slate-400" />
-                      ) : (
-                        <Eye className="h-4 w-4 text-slate-400" />
-                      )}
-                    </button>
+                      className={errors.password ? "border-red-500 pr-10" : "pr-10"}/>
                     {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
-                  </div>
-                </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <input
-                      id="remember-me"
-                      name="remember-me"
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                    />
-                    <Label htmlFor="remember-me" className="ml-2 block text-sm">
-                      Remember me
-                    </Label>
-                  </div>
-
-                  <div className="text-sm">
-                    <Link
-                      href="/forgot-password"
-                      className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
-                    >
-                      Forgot your password?
-                    </Link>
-                  </div>
-                </div>
-
-                <div>
-                  <Button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:text-slate-300"
-                  >
-                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Sign in
-                  </Button>
-                </div>
-              </form>
-            </div>
-
-            <div className="mt-6">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <Separator className="w-full" />
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="bg-slate-50 px-2 text-slate-500 dark:bg-slate-950 dark:text-slate-400">
-                    Or continue with
-                  </span>
-                </div>
               </div>
-
-              <div className="mt-6">
+              <div className="flex items-center space-x-2 pt-2">
+                <input
+                      id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                <Label htmlFor="remember-me" className="ml-2 block text-sm">
+                  Remember me
+                </Label>
+              </div>
+            </div>
+            <Button className="w-full mt-4" type="submit" disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Login
+            </Button>
+            </form>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Or</span>
+              </div>
+            </div>
+            <div>
                 <Button onClick={handleGoogleLogin} disabled={isGoogleLoading} variant="outline" className="w-full">
                   {isGoogleLoading ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -305,40 +260,34 @@ export default function LoginPage() {
                   )}
                   Sign in with Google
                 </Button>
-              </div>
             </div>
+          </CardContent>
+          <CardFooter className="flex flex-col items-center justify-center space-y-2">
+            <div className="text-sm text-muted-foreground">
+              Don&apos;t have an account?{" "}
+              <Link href="/signup" className="text-primary hover:underline">
+                Sign up
+              </Link>
+            </div>
+          </CardFooter>
+        </Card>
+      </main>
+      <footer className="border-t py-4">
+        <div className="container flex flex-col items-center justify-center gap-2 text-center md:flex-row md:justify-between">
+          <div className="flex items-center gap-2">
+            <Logo />
+            <p className="text-sm text-muted-foreground">© 2025 AlertNow. All rights reserved.</p>
+          </div>
+          <div className="flex gap-4">
+            <Link href="#" className="text-sm text-muted-foreground hover:underline underline-offset-4">
+              Terms
+            </Link>
+            <Link href="#" className="text-sm text-muted-foreground hover:underline underline-offset-4">
+              Privacy
+            </Link>
           </div>
         </div>
-      </div>
-
-      {/* Right side - Image */}
-      <div className="relative hidden w-0 flex-1 lg:block">
-        <div className="absolute inset-0 h-full w-full bg-gradient-to-br from-indigo-600 to-blue-600">
-          <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03]"></div>
-          <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_500px_at_50%_200px,rgba(120,119,198,0.3),transparent)]"></div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="max-w-md text-center text-white">
-              <div className="mb-6 flex justify-center">
-                <Logo className="rounded-full bg-slate-100 p-4 backdrop-blur-sm"/>
-              </div>
-              <h2 className="text-3xl font-bold mb-4">Welcome back to AlertNow</h2>
-              <p className="text-lg text-white/80 mb-6">
-                Monitor your systems with intelligent alerts and powerful automations
-              </p>
-              <Button
-                variant="outline"
-                className="bg-white/10 text-white border-white/20 backdrop-blur-sm hover:bg-white/20"
-                asChild
-              >
-                <Link href="/">
-                  Learn more about AlertNow
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+      </footer>
     </div>
   )
 }

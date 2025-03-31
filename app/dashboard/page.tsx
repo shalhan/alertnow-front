@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ChartContainer, ChartLegend, ChartTooltip, LineChart } from "@/components/ui/chart"
+import { ChartContainer, ChartLegend } from "@/components/ui/chart"
 
 // Mock data for the dashboard
 const alertTrendData = [
@@ -206,68 +206,6 @@ export default function Dashboard() {
                 </TabsList>
               </div>
 
-              <TabsContent value="24h" className="space-y-4">
-                <ChartContainer className="h-[300px]">
-                  <LineChart
-                    data={alertTrendData}
-                    categories={["Critical", "Error", "Warning", "Info"]}
-                    index="name"
-                    colors={["#ef4444", "#f97316", "#eab308", "#3b82f6"]}
-                    valueFormatter={(value) => `${value} alerts`}
-                    showLegend={false}
-                    showXAxis={true}
-                    showYAxis={true}
-                    showGridLines={true}
-                  />
-                  {/* <ChartTooltip /> */}
-                </ChartContainer>
-                <ChartLegend
-                  categories={["Critical", "Error", "Warning", "Info"]}
-                  colors={["#ef4444", "#f97316", "#eab308", "#3b82f6"]}
-                />
-              </TabsContent>
-
-              <TabsContent value="7days" className="space-y-4">
-                <ChartContainer className="h-[300px]">
-                  <LineChart
-                    data={alertTrendData}
-                    categories={["Critical", "Error", "Warning", "Info"]}
-                    index="name"
-                    colors={["#ef4444", "#f97316", "#eab308", "#3b82f6"]}
-                    valueFormatter={(value) => `${value} alerts`}
-                    showLegend={false}
-                    showXAxis={true}
-                    showYAxis={true}
-                    showGridLines={true}
-                  />
-                  {/* <ChartTooltip /> */}
-                </ChartContainer>
-                <ChartLegend
-                  categories={["Critical", "Error", "Warning", "Info"]}
-                  colors={["#ef4444", "#f97316", "#eab308", "#3b82f6"]}
-                />
-              </TabsContent>
-
-              <TabsContent value="30days" className="space-y-4">
-                <ChartContainer className="h-[300px]">
-                  <LineChart
-                    data={alertTrendData}
-                    categories={["Critical", "Error", "Warning", "Info"]}
-                    index="name"
-                    colors={["#ef4444", "#f97316", "#eab308", "#3b82f6"]}
-                    valueFormatter={(value) => `${value} alerts`}
-                    showLegend={false}
-                    showXAxis={true}
-                    showYAxis={true}
-                    showGridLines={true}
-                  />
-                  {/* <ChartTooltip /> */}
-                </ChartContainer>
-                <ChartLegend
-                  categories={["Critical", "Error", "Warning", "Info"]}
-                  colors={["#ef4444", "#f97316", "#eab308", "#3b82f6"]}
-                />
-              </TabsContent>
             </Tabs>
           </CardContent>
         </Card>

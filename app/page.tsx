@@ -1,291 +1,71 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
-import { useInView } from 'react-intersection-observer';
 import Link from "next/link"
-import { AlertTriangle, ArrowRight, Check, X, Clock, Smile, Frown, Zap, Settings, Users } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
+import { XCircle, PenToolIcon as ArrowRight } from "lucide-react"
 import { Logo } from "@/components/ui/logo"
-import MockNotification from "@/components/ui/mock-notification";
+import MockNotification from "@/components/ui/mock-notification"
 import { FaDiscord, FaSlack, FaTelegram } from "react-icons/fa"
 
-const plans = [
-  {
-    name: "Starter",
-    description: "For small projects and indie developers",
-    price: "$9",
-    features: [
-      "3 projects",
-      "1 environment",
-      "1,000 alerts/month",
-      "14-day log retention",
-      "Discord notifications",
-      "Basic analytics"
-    ],
-    missingFeatures: [
-      "Telegram & Discord notifications",
-      "Webhooks",
-      "Advanced analytics",
-      "Custom alert rules",
-      "Priority support"
-    ],
-    isMostPopular: false
-  },
-  {
-    name: "Growth",
-    description: "For startups and small teams",
-    price: "$19",
-    features: [
-      "5 projects",
-      "2 environments (Prod + Staging)",
-      "5,000 alerts/month",
-      "30-day log retention",
-      "Slack, Discord & Telegram notifications",
-      "Webhooks",
-      "Basic analytics"
-    ],
-    missingFeatures: [
-      "Advanced analytics",
-      "Custom alert rules",
-      "Priority support"
-    ],
-    isMostPopular: true
-  },
-  {
-    name: "Pro",
-    description: "For growing teams & production apps",
-    price: "$29",
-    features: [
-      "10 projects",
-      "3 environments (Prod, Staging, Dev)",
-      "20,000 alerts/month",
-      "90-day log retention",
-      "Slack, Discord, Telegram, Email & Webhooks",
-      "Advanced analytics",
-      "Custom alert rules",
-      "Priority support"
-    ],
-    missingFeatures: [],
-    isMostPopular: false
-  }
-]
-
-const features = [
-  {
-    icon: "🔔",
-    title: "Real-time Alerts",
-    description: "Get notified instantly when issues arise.",
-    details: "Configure alerts based on thresholds, patterns, or anomalies. Receive notifications via email, Slack, and more.",
-    gradient: "from-white to-indigo-50/30 dark:from-slate-900 dark:to-indigo-950/30",
-    accent: "from-indigo-500/20"
-  },
-  {
-    icon: "⚡",
-    description: "Automate your alert workflow.",
-    title: "Smart Rules & Automations",
-    details: "Define complex conditions and actions for routing alerts. Escalate unresolved issues and automate remediation steps.",
-    gradient: "from-white to-violet-50/30 dark:from-slate-900 dark:to-violet-950/30",
-    accent: "from-violet-500/20"
-  },
-  {
-    icon: "📊",
-    title: "Comprehensive Dashboard",
-    description: "Visualize and manage all alerts in one place.",
-    details: "Customizable dashboards, detailed alert history, and powerful filtering capabilities.",
-    gradient: "from-white to-teal-50/30 dark:from-slate-900 dark:to-teal-950/30",
-    accent: "from-teal-500/20"
-  },
-  {
-    icon: "🤝",
-    title: "Team Collaboration",
-    description: "Assign alerts to team members.",
-    details: "Add comments and track resolution progress. Shared visibility to keep everyone informed.",
-    gradient: "from-white to-amber-50/30 dark:from-slate-900 dark:to-amber-950/30",
-    accent: "from-amber-500/20"
-  },
-  {
-    icon: "📈",
-    title: "Historical Analysis",
-    description: "Learn from past incidents.",
-    details: "Analyze alert patterns over time. Measure response effectiveness with detailed metrics.",
-    gradient: "from-white to-cyan-50/30 dark:from-slate-900 dark:to-cyan-950/30",
-    accent: "from-cyan-500/20"
-  },
-  {
-    icon: "🔌",
-    title: "Seamless Integrations",
-    description: "Connect with existing tools and workflows.",
-    details: "Integrate with monitoring tools, communication platforms, and ticketing systems. Use the API for custom integrations.",
-    gradient: "from-white to-rose-50/30 dark:from-slate-900 dark:to-rose-950/30",
-    accent: "from-rose-500/20"
-  }
-];
-
-
 export default function LandingPage() {
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
-  const [showWaitlistModal, setShowWaitlistModal] = useState(false)
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    company: "",
-  })
-  const [formSubmitted, setFormSubmitted] = useState(false)
-
-  const { ref: refLeft, inView: inViewLeft } = useInView({
-    threshold: 0.1,
-    triggerOnce: false
-  });
-  
-  const { ref: refRight, inView: inViewRight } = useInView({
-    threshold: 0.1,
-    triggerOnce: false
-  });
-
-  const handleJoinWaitlist = (plan: string) => {
-    if (plan != "") {
-      window.location.href = "/signup?plan=" +  plan.toLowerCase()
-    } else {
-      window.location.href = "/signup"
-    }
-
-    // setSelectedPlan(plan)
-    // setShowWaitlistModal(true)
-  }
-
-  const handleSubmitWaitlist = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Here you would typically send the data to your backend
-    console.log("Submitting waitlist request:", { ...formData, plan: selectedPlan })
-    setFormSubmitted(true)
-
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setFormSubmitted(false)
-      setShowWaitlistModal(false)
-      setFormData({
-        name: "",
-        email: "",
-        company: "",
-      })
-    }, 3000)
-  }
-
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950">
-      {/* Navigation */}
-      <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+    <div className="flex min-h-screen flex-col">
+      <header className="sticky top-0 z-40 border-b bg-background">
+        <div className="container flex h-16 items-center justify-between py-4">
           <div className="flex items-center gap-2">
             <Logo />
-            <span className="text-lg font-bold">AlertNow</span>
+            <span className="text-xl font-bold">AlertNow</span>
           </div>
-          <nav className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-sm font-medium hover:text-primary">
+          <nav className="hidden md:flex gap-6">
+            <Link href="#features" className="text-sm font-medium hover:underline underline-offset-4">
               Features
-            </a>
-            <a href="#use-cases" className="text-sm font-medium hover:text-primary">
-              Use Cases
-            </a>
-            <a href="#pricing" className="text-sm font-medium hover:text-primary">
-              Pricing
-            </a>
-            <a href="#" className="text-sm font-medium hover:text-primary">
-              Documentation
-            </a>
+            </Link>
+            <Link href="#how-it-works" className="text-sm font-medium hover:underline underline-offset-4">
+              How It Works
+            </Link>
+            <Link href="#who-is-this-for" className="text-sm font-medium hover:underline underline-offset-4">
+              Who Is This For
+            </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Button variant="ghost" asChild>
-              <Link href="/login">Log In</Link>
-            </Button>
-            <Button className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 dark:text-slate-300">
+            <Link href="/login" className="text-sm font-medium hover:underline underline-offset-4">
+              Login
+            </Link>
+            <Button asChild>
               <Link href="/signup">Sign Up</Link>
             </Button>
           </div>
         </div>
       </header>
-
-      {/* Hero Section */}
-      <section className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-purple-50/50 to-sky-50 dark:from-indigo-950/30 dark:via-purple-950/20 dark:to-sky-950/30 -z-10"></div>
-        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.015] -z-10"></div>
-        <div className="absolute top-0 -left-40 -z-10 transform-gpu blur-3xl" aria-hidden="true">
-          <div
-            className="aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-violet-500 to-indigo-300 opacity-20"
-            style={{
-              clipPath:
-                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-            }}
-          ></div>
-        </div>
-        <div className="absolute top-60 -right-40 -z-10 transform-gpu blur-3xl" aria-hidden="true">
-          <div
-            className="aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-blue-600 to-cyan-400 opacity-20"
-            style={{
-              clipPath:
-                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-            }}
-          ></div>
-        </div>
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row items-center gap-12">
-            <div className="flex-1 space-y-6">
-              <Badge className="mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:from-violet-700 hover:to-indigo-700 px-3 py-1 text-sm">
-                Beta Soon
-              </Badge>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
-                Tired of Missing {" "}
-                <span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-blue-600 bg-clip-text text-transparent">
-                 Critical Alerts? 
-                </span>
-              </h1>
-              <p className="text-xl text-slate-600 dark:text-slate-300">
-                Get Instant Notifications in Discord, Slack, and More—Directly from Your Code!
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Button
-                   onClick={() => document.getElementById("pricing")!.scrollIntoView({ behavior: "smooth" })}
-                  size="lg"
-                  className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 dark:text-slate-300"
-                >
-                  Get Started
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-                {/* <Button size="lg" variant="outline" className="border-indigo-200 dark:border-indigo-800">
-                  Watch Demo
-                </Button> */}
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="py-20 md:py-28 bg-gradient-to-b from-background to-muted">
+          <div className="container px-4 md:px-6">
+            <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
+              <div className="space-y-4">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
+                  Tired of Missing Critical Alerts?
+                </h1>
+                <p className="text-xl text-muted-foreground md:text-2xl">
+                  Get Instant Notifications in Discord, Slack, and More—Directly from Your Code!
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                  <Button size="lg" className="text-lg">
+                    Start Now - FREE
+                  </Button>
+                </div>
               </div>
-            </div>
-            <div className="flex-1">
-              <div className="relative lg:absolute lg:top-8 lg:rotate-[2deg] lg:h-[500px] lg:w-[920px] rounded-xl overflow-hidden shadow-2xl border border-indigo-100 dark:border-indigo-900/50">
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-white/90 dark:from-indigo-950/50 dark:to-slate-900/90 backdrop-blur-sm z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <img src="/hiw2.png?height=600&width=800" alt="AlertNow Dashboard" className="w-full h-auto" />
-              </div>
+              <div className="relative h-[350px] w-full rounded-xl p-4 flex items-center justify-center">
               <MockNotification 
-                className={"md:right-[10%] md:bottom-8"}
+                className={"md:left-40 bottom-2"}
                 name={"Discord"}
                 timeout={200}
                 renderIcon={() => (
                   <FaDiscord  aria-hidden="true" className="size-6 text-blue-800" />
                 )} />
               <MockNotification 
-                className={"md:right-[10%] md:bottom-34"}
+                className={"md:left-20 bottom-34"}
                 name={"Slack"}
                 timeout={300}
                 renderIcon={() => (
@@ -293,790 +73,432 @@ export default function LandingPage() {
                 )} />
 
               <MockNotification 
-                className={"md:right-[10%] md:bottom-72"}
+                className={"md:left-0 bottom-60"}
                 name={"Telegram"}
                 timeout={400}
                 renderIcon={() => (
                   <FaTelegram  aria-hidden="true" className="size-6 text-blue-400" />
                 )} />
-
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      
-      {/* With and Without Section */ }
-      <section className="section py-24">
-        <div className="container mx-auto">
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-16 max-w-6xl mx-auto">
-            
-            {/* Without AlertNow */}
-            <div 
-              className="bg-slate-50 rounded-2xl p-8 border border-slate-200 transition-all duration-500 shadow-lg hover:shadow-xl"
-            >
-              <div className="flex items-center mb-6">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-red-100 mr-4">
-                  <X size={20} className="text-red-500" />
-                </div>
-                <h3 className="text-xl font-semibold">Without AlertNow</h3>
-              </div>
-              
-              <div className="space-y-6">
-                <div className="flex">
-                  <div className="mt-1 mr-4">
-                    <Clock size={18} className="text-slate-400" />
-                  </div>
-                  <div>
-                    <p className="text-slate-800">
-                      <span className="font-medium">Delayed response:</span> Issues go unnoticed until customers complain.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex">
-                  <div className="mt-1 mr-4">
-                    <AlertTriangle size={18} className="text-slate-400" />
-                  </div>
-                  <div>
-                    <p className="text-slate-800">
-                      <span className="font-medium">Scattered alerts:</span> Messages lost in Slack, emails ignored, no central hub.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex">
-                  <div className="mt-1 mr-4">
-                    <Frown size={18} className="text-slate-400" />
-                  </div>
-                  <div>
-                    <p className="text-slate-800">
-                      <span className="font-medium">No prioritization:</span> Critical alerts buried under noise, slow incident handling.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-8 py-4 px-6 bg-red-50 rounded-lg border border-red-100">
-                <p className="text-red-700 text-sm">
-                  <span className="font-medium">Result:</span> Missed alerts, delayed fixes, and unhappy customers.
-                </p>
-              </div>
+        {/* Features Section */}
+        <section id="features" className="py-16 md:py-24">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+              <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">Why AlertNow?</div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                Features That Make The Difference
+              </h2>
             </div>
-            
-            {/* With AlertNow */}
-            <div 
-              className="bg-white rounded-2xl p-8 border border-slate-200 transition-all duration-500 shadow-lg hover:shadow-xl"
-            >
-              <div className="flex items-center mb-6">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-green-100 mr-4">
-                  <Check size={20} className="text-green-500" />
-                </div>
-                <h3 className="text-xl font-semibold">With AlertNow</h3>
-              </div>
-              
-              <div className="space-y-6">
-                <div className="flex">
-                  <div className="mt-1 mr-4">
-                    <Clock size={18} className="text-primary" />
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <Card>
+                <CardContent className="p-6 flex flex-col items-center text-center space-y-4">
+                  <div className="p-2 bg-primary/10 rounded-full">
+                    ⚡ 
                   </div>
-                  <div>
-                    <p className="text-slate-800">
-                      <span className="font-medium">Real-time monitoring:</span> Instantly detect issues before users notice.
-                    </p>
+                  <h3 className="text-xl font-bold">Real-time Alerts</h3>
+                  <p className="text-muted-foreground">
+                    Get notified instantly when issues arise, before they impact your users.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6 flex flex-col items-center text-center space-y-4">
+                  <div className="p-2 bg-primary/10 rounded-full">
+                    🧠 
                   </div>
-                </div>
-                
-                <div className="flex">
-                  <div className="mt-1 mr-4">
-                    <AlertTriangle size={18} className="text-primary" />
+                  <h3 className="text-xl font-bold">Smart Rules & Automations</h3>
+                  <p className="text-muted-foreground">
+                    Create sophisticated routing rules based on error characteristics and severity.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6 flex flex-col items-center text-center space-y-4">
+                  <div className="p-2 bg-primary/10 rounded-full">
+                    📊 
                   </div>
-                  <div>
-                    <p className="text-slate-800">
-                      <span className="font-medium">Smart alert routing:</span> Define rules to send alerts to the right team & channel.
-                    </p>
+                  <h3 className="text-xl font-bold">Comprehensive Dashboard</h3>
+                  <p className="text-muted-foreground">
+                    Monitor all your systems in one place with intuitive visualizations.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6 flex flex-col items-center text-center space-y-4">
+                  <div className="p-2 bg-primary/10 rounded-full">
+                    👥 
                   </div>
-                </div>
-                
-                <div className="flex">
-                  <div className="mt-1 mr-4">
-                    <Smile size={18} className="text-primary" />
+                  <h3 className="text-xl font-bold">Team Collaboration</h3>
+                  <p className="text-muted-foreground">Assign, comment, and resolve issues together with your team.</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6 flex flex-col items-center text-center space-y-4">
+                  <div className="p-2 bg-primary/10 rounded-full">
+                    📈 
                   </div>
-                  <div>
-                    <p className="text-slate-800">
-                      <span className="font-medium">Centralized dashboard:</span> View, track, and manage alerts in one place.
-                    </p>
+                  <h3 className="text-xl font-bold">Historical Analysis</h3>
+                  <p className="text-muted-foreground">
+                    Track patterns over time to identify recurring issues and optimize performance.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6 flex flex-col items-center text-center space-y-4">
+                  <div className="p-2 bg-primary/10 rounded-full">
+                    🔌 
                   </div>
-                </div>
-              </div>
-              
-              <div className="mt-8 py-4 px-6 bg-primary/5 rounded-lg border border-primary/20">
-                <p className="text-primary text-sm">
-                  <span className="font-medium">Result:</span> Faster response, fewer incidents, and happy customers.
-                </p>
-              </div>
+                  <h3 className="text-xl font-bold">Seamless Integrations</h3>
+                  <p className="text-muted-foreground">
+                    Connect with your favorite tools including Discord, Slack, Telegram, and more.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
-
           </div>
-        </div>
-      </section>
+        </section>
 
-
-      {/* How it works */}
-      <section id="how-it-works" className="py-24 bg-white dark:bg-slate-900">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-24">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent inline-block">
-              How it Works
-            </h2>
-            <p className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Get started with AlertNow in three simple steps
-            </p>
-          </div>
-
-          <div className="max-w-5xl mx-auto space-y-36">
-
-            {/* Step 1 */}
-            <div className="relative">
-              <div className="absolute -left-4 top-0 w-12 h-12 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center text-white text-xl font-bold z-10">
-                1
-              </div>
-              {/* Connecting line */}
-              <div className="absolute left-[7px] top-12 bottom-0 w-[2px] h-[calc(100%+4rem)] bg-gradient-to-b from-blue-600 to-indigo-600/20 z-0"></div>
-
-              <div className="pl-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-
-                 
-
-
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white"> Define Your Alert Rules</h3>
-                    <p className="text-slate-600 dark:text-slate-300">
-                      Use the AlertNow Dashboard to set up rules that decide where and when alerts should be sent.
-                    </p>
-                    <p className="text-slate-600 dark:text-slate-300 mb-0">✅ Send critical errors to the engineering Slack channel</p>
-                    <p className="text-slate-600 dark:text-slate-300 mb-0">✅ Forward payment failures to the finance team’s Telegram group</p>
-                    <p className="text-slate-600 dark:text-slate-300 mb-0">✅ Route customer issues to Microsoft Teams</p>
-                  </div>
-                  <div className="rounded-lg overflow-hidden shadow-lg border border-indigo-100 dark:border-indigo-900/50">
-                    <img
-                      src="/hiw4.png?height=300&width=800"
-                      alt="Configure AlertNow Monitors"
-                      className="w-full h-auto object-cover scale-[2] origin-top"
-                    />
-                  </div>
-                </div>
-              </div>
+        {/* Comparison Section */}
+        <section className="py-16 md:py-24 bg-muted">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">The AlertNow Difference</h2>
             </div>
-
-            {/* Step 2 */}
-            <div className="relative">
-              <div className="absolute -left-4 top-0 w-12 h-12 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center text-white text-xl font-bold z-10">
-                2
-              </div>
-              {/* Connecting line */}
-              <div className="absolute left-[7px] top-12 bottom-0 w-[2px] h-[calc(100%+4rem)] bg-gradient-to-b from-blue-600 to-indigo-600/20 z-0"></div>
-
-              <div className="pl-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="rounded-lg overflow-hidden border border-indigo-100 dark:border-indigo-900/50">
-                    <img
-                      src="/hiw1.png"
-                      alt="Integrate AlertNow SDK"
-                      className="w-full h-auto object-cover h-full"
-                    />
+            <div className="grid gap-8 md:grid-cols-2">
+              <Card className="border-destructive/50 bg-destructive/5">
+                <CardContent className="p-6 space-y-4">
+                  <div className="flex items-center gap-2">
+                    <XCircle className="h-6 w-6 text-destructive" />
+                    <h3 className="text-xl font-bold">Without AlertNow</h3>
                   </div>
-                  
-                  <div className="space-y-4">
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Integrate in Seconds</h3>
-                    <p className="text-slate-600 dark:text-slate-300">
-                      Simply install the AlertNow SDK or call the API directly from your code. No complex setup required.
-                    </p>
-                    <div className="bg-slate-100 dark:bg-slate-800 rounded-md p-4 font-mono text-sm overflow-x-auto">
-                      <code className="text-indigo-600 dark:text-indigo-400">
-                        alertNow.error("Something wrong when creating order");
-                      </code>
+                  <p className="text-lg">
+                    You wake up to 100+ angry customer emails. Your API crashed overnight. No alerts. Revenue lost.
+                  </p>
+                  <div className="pt-4 space-y-2">
+                    <div className="flex items-start gap-2">
+                      <XCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                      <p>Discover issues after your customers do</p>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <XCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                      <p>Lose revenue during extended downtime</p>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <XCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                      <p>Damage to your brand reputation</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="border-primary/50 bg-primary/5">
+                <CardContent className="p-6 space-y-4">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-xl font-bold">✅ With AlertNow</h3>
+                  </div>
+                  <p className="text-lg">
+                    Your phone buzzes at 2 AM—AlertNow detects the issue before users notice. You fix it in minutes.
+                    Crisis averted.
+                  </p>
+                  <div className="pt-4 space-y-2">
+                    <div className="flex items-start gap-2">
+                      <p>✅ Instant notifications when issues arise</p>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <p>✅ Fix problems before customers notice</p>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <p>✅ Maintain trust and reliability</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* How It Works Section */}
+        <section id="how-it-works" className="py-16 md:py-24">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+              <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">How It Works</div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                Simple Setup, Powerful Results
+              </h2>
+            </div>
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="flex flex-col items-center text-center space-y-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                  1
+                </div>
+                <h3 className="text-xl font-bold">Setup Alert Rules</h3>
+                <p className="text-muted-foreground">Define exactly what you want to be alerted for.</p>
+                <div className="rounded-lg border-2 border-gray-200 shadow-md p-6 w-full text-left bg-white">
+                  <h3 className="text-lg font-bold mb-4 border-b pb-2 text-black">Alert Routing Rules</h3>
+                  <div className="space-y-6">
+                    {/* Rule #1 */}
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-sm transition-all duration-200">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-white bg-black rounded-full h-6 w-6 flex items-center justify-center text-xs font-medium">1</span>
+                          <span className="font-medium text-black">API Timeout Rule</span>
+                        </div>
+                        <span className="text-xs bg-black text-white px-3 py-1 rounded-full font-medium flex items-center">
+                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                          </svg>
+                          Send to Slack
+                        </span>
+                      </div>
+                      <div className="pl-4 space-y-2 text-sm">
+                        <div className="flex items-center p-2 bg-white rounded border border-gray-100">
+                          <span className="w-28 text-black font-medium">Error Title</span>
+                          <span className="px-2 text-gray-500">contains</span>
+                          <span className="bg-gray-100 px-3 py-1 rounded-md font-mono text-xs">"API Timeout"</span>
+                        </div>
+                        <div className="flex items-center p-2 bg-white rounded border border-gray-100">
+                          <span className="w-28 text-black font-medium">Log Level</span>
+                          <span className="px-2 text-gray-500">is</span>
+                          <span className="bg-red-100 text-red-800 px-3 py-1 rounded-md font-medium text-xs">ERROR</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Rule #2 */}
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-sm transition-all duration-200">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-white bg-black rounded-full h-6 w-6 flex items-center justify-center text-xs font-medium">2</span>
+                          <span className="font-medium text-black">Database Error Rule</span>
+                        </div>
+                        <span className="text-xs bg-black text-white px-3 py-1 rounded-full font-medium flex items-center">
+                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                          </svg>
+                          Send to Discord
+                        </span>
+                      </div>
+                      <div className="pl-4 space-y-2 text-sm">
+                        <div className="flex items-center p-2 bg-white rounded border border-gray-100">
+                          <span className="w-28 text-black font-medium">Error Message</span>
+                          <span className="px-2 text-gray-500">prefix</span>
+                          <span className="bg-gray-100 px-3 py-1 rounded-md font-mono text-xs">"Database"</span>
+                        </div>
+                        <div className="flex items-center p-2 bg-white rounded border border-gray-100">
+                          <span className="w-28 text-black font-medium">Service</span>
+                          <span className="px-2 text-gray-500">is</span>
+                          <span className="bg-gray-100 px-3 py-1 rounded-md font-mono text-xs">"payment-api"</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+              <div className="flex flex-col items-center text-center space-y-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                  2
+                </div>
+                <h3 className="text-xl font-bold">Integrate in 5 Minutes</h3>
+                <p className="text-muted-foreground">Simple API, no complex setup.</p>
+                <div className="rounded-lg bg-muted p-4 w-full">
+                  <pre className="text-sm text-left overflow-x-auto">
+                    <code>
+                      {`import { AlertNow } from 'alertnow';
 
-            {/* Step 3 */}
-            <div className="relative">
-              <div className="absolute -left-4 top-0 w-12 h-12 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center text-white text-xl font-bold z-10">
-                3
+// Initialize with your API key
+const alertnow = new AlertNow('YOUR_API_KEY');
+
+// Set up an alert
+alertnow.send('critical', 
+  "runtime error!", 
+  err.Message(), 
+  { userId: 1 }
+);`}
+                    </code>
+                  </pre>
+                </div>
               </div>
-
-              <div className="pl-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Instant Alerts, Right Where You Need Them</h3>
-                    <p className="text-slate-600 dark:text-slate-300">
-                      When an alert is triggered, AlertNow automatically distributes it to the correct platform (Discord, Slack, Telegram, MS Teams, etc.), ensuring the right people get notified instantly.
-                    </p>
+              <div className="flex flex-col items-center text-center space-y-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                  3
+                </div>
+                <h3 className="text-xl font-bold">Get Notified in Discord, Telegram, Slack, etc.</h3>
+                <p className="text-muted-foreground">Receive alerts on your preferred platforms.</p>
+                <div className="grid grid-cols-4 gap-2 w-full">
+                  <div className="flex flex-col items-center p-3 border rounded-lg">
+                    <svg className="h-6 w-6 mb-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4C14.89 4.21 14.76 4.48 14.67 4.69C13.09 4.46 11.51 4.46 9.95 4.69C9.85 4.48 9.72 4.21 9.61 4C8.1 4.26 6.66 4.71 5.33 5.33C2.94 8.8 2.34 12.2 2.64 15.56C4.37 16.86 6.05 17.69 7.71 18.2C8.03 17.78 8.32 17.34 8.57 16.88C8.06 16.69 7.57 16.46 7.11 16.19C7.22 16.11 7.33 16.03 7.43 15.95C10.05 17.17 12.94 17.17 15.53 15.95C15.64 16.03 15.74 16.11 15.85 16.19C15.39 16.46 14.9 16.69 14.39 16.88C14.64 17.34 14.93 17.78 15.25 18.2C16.91 17.69 18.59 16.86 20.32 15.56C20.68 11.65 19.67 8.28 17.27 5.33H19.27ZM8.02 13.5C7.05 13.5 6.25 12.61 6.25 11.52C6.25 10.44 7.03 9.54 8.02 9.54C9.01 9.54 9.8 10.43 9.79 11.52C9.79 12.61 9.01 13.5 8.02 13.5ZM15.98 13.5C15.01 13.5 14.21 12.61 14.21 11.52C14.21 10.44 14.99 9.54 15.98 9.54C16.97 9.54 17.76 10.43 17.75 11.52C17.75 12.61 16.97 13.5 15.98 13.5Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                    <span className="text-xs">Discord</span>
                   </div>
-                  <div className="rounded-lg overflow-hidden p-6">
-                    <img
-                      src="/hiw3.png"
-                      alt="Receive AlertNow Notifications"
-                      className="w-full h-auto h-full rounded-md"
-                    />
+                  <div className="flex flex-col items-center p-3 border rounded-lg">
+                    <svg className="h-6 w-6 mb-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.64 8.8C16.49 10.38 15.84 14.22 15.51 15.99C15.37 16.74 15.09 16.99 14.83 17.02C14.25 17.07 13.81 16.64 13.25 16.27C12.37 15.69 11.87 15.33 11.02 14.77C10.03 14.12 10.67 13.76 11.24 13.18C11.39 13.03 13.95 10.7 14 10.49C14.0069 10.4476 14.0069 10.4043 14 10.362C13.9828 10.3208 13.9558 10.2848 13.922 10.257C13.87 10.23 13.8 10.24 13.74 10.25C13.67 10.26 12.14 11.25 9.17 13.22C8.71 13.53 8.3 13.68 7.92 13.68C7.51 13.68 6.72 13.47 6.12 13.29C5.38 13.07 4.8 12.95 4.85 12.54C4.87 12.33 5.17 12.11 5.74 11.89C8.92 10.5 11.08 9.58 12.21 9.14C15.33 7.92 16.07 7.69 16.54 7.69C16.65 7.69 16.89 7.72 17.06 7.86C17.2 7.97 17.23 8.12 17.24 8.23C17.24 8.35 17.25 8.69 17.24 8.78L16.64 8.8Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                    <span className="text-xs">Telegram</span>
+                  </div>
+                  <div className="flex flex-col items-center p-3 border rounded-lg">
+                    <svg className="h-6 w-6 mb-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M5.25 15.75C7.32107 15.75 9 14.0711 9 12C9 9.92893 7.32107 8.25 5.25 8.25C3.17893 8.25 1.5 9.92893 1.5 12C1.5 14.0711 3.17893 15.75 5.25 15.75Z"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M18.75 22.5C20.8211 22.5 22.5 20.8211 22.5 18.75C22.5 16.6789 20.8211 15 18.75 15C16.6789 15 15 16.6789 15 18.75C15 20.8211 16.6789 22.5 18.75 22.5Z"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M18.75 9C20.8211 9 22.5 7.32107 22.5 5.25C22.5 3.17893 20.8211 1.5 18.75 1.5C16.6789 1.5 15 3.17893 15 5.25C15 7.32107 16.6789 9 18.75 9Z"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M9 12H15V18.75"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M15 5.25H9V12"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span className="text-xs">Slack</span>
+                  </div>
+                  <div className="flex flex-col items-center p-3 border rounded-lg">
+                    <svg className="h-6 w-6 mb-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M21.75 3.75V20.25H2.25V3.75H21.75ZM12 12.75L21 6.75H3L12 12.75Z"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span className="text-xs">Email</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-24 relative overflow-hidden">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent inline-block">
-            Powerful Features
-          </h2>
-          <p className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-            Everything you need to monitor your systems and respond to issues quickly and effectively.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <Card key={index} className={`group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 relative bg-gradient-to-br ${feature.gradient}`}>
-              <div className={`absolute top-0 right-0 bottom-0 w-24 bg-gradient-to-l ${feature.accent} to-transparent`}></div>
-              <CardHeader className="relative z-10">
-                <div className="text-4xl mb-4 bg-gradient-to-br text-white w-12 h-12 rounded-lg flex items-center justify-center">
-                  {feature.icon}
-                </div>
-                <CardTitle className="text-xl">{feature.title}</CardTitle>
-                <CardDescription className="text-slate-600 dark:text-slate-400">
-                  {feature.description}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="relative z-10">
-                <p className="text-slate-600 dark:text-slate-400">
-                  {feature.details}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </section>
-
-      {/* Target Audience Section */}
-      <section id="use-cases" className="py-12 md:py-20 bg-background">
-        <div className="container px-4 mx-auto">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent inline-block">
-              Who Is This For?
-              </h2>
-              <p className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Perfect For Your Business. AlertNow is designed specifically for these use cases
-              </p>
+        {/* Who Is This For Section */}
+        <section id="who-is-this-for" className="py-16 md:py-24 bg-muted">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+              <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">
+                Who Is This For?
+              </div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Perfect For Your Business</h2>
             </div>
-          </div>
-          <div className="mx-auto grid max-w-5xl gap-6 py-12 md:grid-cols-3">
-            <div className="relative p-1">
-              <div className="absolute inset-0 bg-gradient-to-r border border-slate-200 shadow-lg"></div>
-              <Card className="relative bg-white rounded-lg">
-                <CardContent className="p-6">
-                  <div className="flex flex-col items-center gap-4 text-center">
-                    <Users className="h-12 w-12 text-violet-600" />
-                    <h3 className="text-xl font-bold">Solo Founders</h3>
-                    <p className="text-muted-foreground">
-                      Who can't afford downtime and need to maximize their efficiency.
-                    </p>
+            <div className="grid gap-8 md:grid-cols-3">
+              <Card>
+                <CardContent className="p-6 flex flex-col items-center text-center space-y-4">
+                  <div className="p-2 bg-primary/10 rounded-full">
+                    👥
                   </div>
+                  <h3 className="text-xl font-bold">Solo Founders</h3>
+                  <p className="text-muted-foreground">
+                    Who can't afford downtime and need to maximize their efficiency.
+                  </p>
                 </CardContent>
               </Card>
-            </div>
-
-            <div className="relative p-1">
-              <div className="absolute inset-0 bg-gradient-to-r border border-slate-200 shadow-lg"></div>
-              <Card className="relative bg-white rounded-lg">
-                <CardContent className="p-6">
-                  <div className="flex flex-col items-center gap-4 text-center">
-                    <Zap className="h-12 w-12 text-violet-600" />
-                    <h3 className="text-xl font-bold">Indie Hackers</h3>
-                    <p className="text-muted-foreground">Who want peace of mind while scaling their products.</p>
+              <Card>
+                <CardContent className="p-6 flex flex-col items-center text-center space-y-4">
+                  <div className="p-2 bg-primary/10 rounded-full">
+                    ⚡
                   </div>
+                  <h3 className="text-xl font-bold">Indie Hackers</h3>
+                  <p className="text-muted-foreground">Who want peace of mind while scaling their products.</p>
                 </CardContent>
               </Card>
-            </div>
-
-            
-            <div className="relative p-1">
-              <div className="absolute inset-0 bg-gradient-to-r border border-slate-200 shadow-lg"></div>
-              <Card className="relative bg-white rounded-lg">
-                <CardContent className="p-6">
-                  <div className="flex flex-col items-center gap-4 text-center">
-                    <Settings className="h-12 w-12 text-violet-600" />
-                    <h3 className="text-xl font-bold">SaaS & API Businesses</h3>
-                    <p className="text-muted-foreground">
-                      Needing real-time monitoring to maintain service reliability.
-                    </p>
+              <Card>
+                <CardContent className="p-6 flex flex-col items-center text-center space-y-4">
+                  <div className="p-2 bg-primary/10 rounded-full">
+                    🛡️
                   </div>
+                  <h3 className="text-xl font-bold">SaaS & API Businesses</h3>
+                  <p className="text-muted-foreground">Needing real-time monitoring to maintain service reliability.</p>
                 </CardContent>
               </Card>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-
-      {/* Pricing Section */}
-      <section id="pricing" className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 to-indigo-50/30 dark:from-slate-950 dark:to-indigo-950/30 -z-10"></div>
-        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.015] -z-10"></div>
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent inline-block">
-              Simple, Transparent Pricing
-            </h2>
-            <p className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Choose the plan that's right for your business. All plans include a 14-day free trial.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-            {plans.map((plan) => (
-              <Card key={plan.name} className={`${plan.isMostPopular ? 'scale-110' : ''} border border-slate-200 dark:border-slate-800 relative overflow-hidden bg-white dark:bg-slate-900 hover:shadow-xl transition-all duration-300`}>
-                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-400 to-indigo-400"></div>
-                { plan.isMostPopular ? 
-                <div className="absolute top-0 right-0 bg-gradient-to-r from-violet-500 to-indigo-500 text-white px-3 py-1 text-xs font-bold rounded-bl-lg">
-                  MOST POPULAR
-                </div> : ''}
-                <CardHeader>
-                  <CardTitle className="text-slate-900 dark:text-white">{plan.name}</CardTitle>
-                  <CardDescription className="text-slate-500 dark:text-slate-400">{plan.description}</CardDescription>
-                  <div className="mt-4">
-                    <span className="text-4xl font-bold text-slate-900 dark:text-white">{plan.price}</span>
-                    <span className="text-slate-500 dark:text-slate-400">/month</span>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {plan.features.map((feature, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <Check className="h-5 w-5 text-indigo-500 mt-0.5" />
-                        <span className="text-slate-600 dark:text-slate-300">{feature}</span>
-                      </li>
-                    ))}
-                    {plan.missingFeatures.map((feature, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <X className="h-5 w-5 text-slate-400 mt-0.5" />
-                        <span className="text-slate-400 dark:text-slate-500">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Button
-                    onClick={() => handleJoinWaitlist(plan.name)}
-                    className="w-full bg-gradient-to-r from-violet-500 to-indigo-500 hover:from-violet-600 hover:to-indigo-600 dark:text-slate-300"
-                  >
-                    Start Free Trial
+        {/* CTA Section */}
+        <section id="signup" className="py-12 md:py-20 bg-primary text-primary-foreground">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                  🚀 Get Started in Minutes
+                </h2>
+                <p className="max-w-[900px] md:text-xl/relaxed">⚡ 5-Minute Setup. Lifetime Peace of Mind.</p>
+                <p className="max-w-[900px] md:text-xl/relaxed">💰 Start for Free – Only Pay When You Scale.</p>
+              </div>
+              <div className="w-full max-w-sm space-y-2">
+                <form className="flex flex-col gap-2 sm:flex-row">
+                  <Button type="button" variant="secondary" size="lg" className="w-full">
+                    <Link href="/signup"> Sign Up & Get 100 Free Alerts</Link>
                   </Button>
-                </CardFooter>
-              </Card>
-            ))}
-
-          {/* Solo Plan */}
-          {/* <Card className="border border-indigo-200 dark:border-indigo-800 relative overflow-hidden bg-white dark:bg-slate-900 hover:shadow-xl transition-all duration-300 scale-105 z-10">
-              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-violet-500 to-indigo-500"></div>
-              <div className="absolute top-0 right-0 bg-gradient-to-r from-violet-500 to-indigo-500 text-white px-3 py-1 text-xs font-bold rounded-bl-lg">
-                MOST POPULAR
+                </form>
               </div>
-              <CardHeader>
-                <CardTitle className="text-slate-900 dark:text-white">Solo</CardTitle>
-                <CardDescription className="text-slate-500 dark:text-slate-400">
-                  For growing teams with advanced needs
-                </CardDescription>
-                <div className="mt-4">
-                  <span className="text-4xl font-bold text-slate-900 dark:text-white">$9</span>
-                  <span className="text-slate-500 dark:text-slate-400">/month</span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-indigo-500 mt-0.5" />
-                    <span className="text-slate-600 dark:text-slate-300">Up to 10 team members</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-indigo-500 mt-0.5" />
-                    <span className="text-slate-600 dark:text-slate-300">Unlimited alerts</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-indigo-500 mt-0.5" />
-                    <span className="text-slate-600 dark:text-slate-300">Email, Slack, and webhook notifications</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-indigo-500 mt-0.5" />
-                    <span className="text-slate-600 dark:text-slate-300">30-day alert history</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-indigo-500 mt-0.5" />
-                    <span className="text-slate-600 dark:text-slate-300">Advanced dashboard with custom views</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-indigo-500 mt-0.5" />
-                    <span className="text-slate-600 dark:text-slate-300">Advanced automations and rules</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-indigo-500 mt-0.5" />
-                    <span className="text-slate-600 dark:text-slate-300">Standard integrations</span>
-                  </li>
-                </ul>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  onClick={() => handleJoinWaitlist("Pro")}
-                  className="w-full bg-gradient-to-r from-violet-500 to-indigo-500 hover:from-violet-600 hover:to-indigo-600"
-                >
-                  Join Waitlist
-                </Button>
-              </CardFooter>
-          </Card> */}
-
-          {/* Pro Plan */}
-          {/* <Card className="border border-slate-200 dark:border-slate-800 relative overflow-hidden bg-white dark:bg-slate-900 hover:shadow-xl transition-all duration-300">
-            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-400 to-indigo-400"></div>
-            <CardHeader>
-              <CardTitle className="text-slate-900 dark:text-white">Start Up</CardTitle>
-              <CardDescription className="text-slate-500 dark:text-slate-400">
-                For small teams just getting started
-              </CardDescription>
-              <div className="mt-4">
-                <span className="text-4xl font-bold text-slate-900 dark:text-white">$19</span>
-                <span className="text-slate-500 dark:text-slate-400">/month</span>
+              <div className="flex items-center justify-center space-x-4 mt-8">
+                {/* <Link href="#" className="flex items-center gap-1 text-primary-foreground hover:underline">
+                  <ArrowRight className="h-4 w-4" />
+                  <span>View Pricing</span>
+                </Link> */}
+                <Link href="/documentations" className="flex items-center gap-1 text-primary-foreground hover:underline">
+                  <ArrowRight className="h-4 w-4" />
+                  <span>Read Documentation</span>
+                </Link>
               </div>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                <li className="flex items-start gap-2">
-                  <Check className="h-5 w-5 text-indigo-500 mt-0.5" />
-                  <span className="text-slate-600 dark:text-slate-300">Up to 3 team members</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-5 w-5 text-indigo-500 mt-0.5" />
-                  <span className="text-slate-600 dark:text-slate-300">100 alerts per month</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-5 w-5 text-indigo-500 mt-0.5" />
-                  <span className="text-slate-600 dark:text-slate-300">Email notifications</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-5 w-5 text-indigo-500 mt-0.5" />
-                  <span className="text-slate-600 dark:text-slate-300">7-day alert history</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-5 w-5 text-indigo-500 mt-0.5" />
-                  <span className="text-slate-600 dark:text-slate-300">Basic dashboard</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <X className="h-5 w-5 text-slate-400 mt-0.5" />
-                  <span className="text-slate-400 dark:text-slate-500">Advanced automations</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <X className="h-5 w-5 text-slate-400 mt-0.5" />
-                  <span className="text-slate-400 dark:text-slate-500">Custom integrations</span>
-                </li>
-              </ul>
-            </CardContent>
-            <CardFooter>
-              <Button
-                onClick={() => handleJoinWaitlist("Free")}
-                className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600"
-              >
-                Join Waitlist
-              </Button>
-            </CardFooter>
-          </Card> */}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-slate-950 dark:to-indigo-950/30">
-        <div className="absolute inset-0-z-10"></div>
-        <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-[0.03] -z-10"></div>
-
-        {/* Animated gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 via-indigo-500/20 to-blue-600/20 animate-gradient-slow -z-10"></div>
-
-        {/* Decorative elements */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-300/50 to-transparent"></div>
-        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-300/50 to-transparent"></div>
-
-        {/* Glowing orbs */}
-        <div className="absolute top-10 left-10 w-64 h-64 rounded-full bg-blue-400/20 blur-3xl -z-10"></div>
-        <div className="absolute bottom-10 right-10 w-80 h-80 rounded-full bg-indigo-500/20 blur-3xl -z-10"></div>
-
-        <div className="container mx-auto px-4 relative">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white drop-shadow-md">
-              Ready to transform your alert management?
-            </h2>
-            <p className="text-xl text-white/90 mb-8 drop-shadow">
-              Join the AlertNow beta and be among the first to experience the future of intelligent alerting.
-            </p>
-            <Button
-              size="lg"
-              onClick={() => handleJoinWaitlist("")}
-              className="bg-white text-indigo-600 hover:bg-white/90 hover:text-indigo-700 font-medium text-lg px-8 shadow-lg"
-            >
-              Register Now
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="py-12 bg-slate-50 dark:bg-slate-900">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Logo />
-                <span className="text-lg font-bold text-slate-900 dark:text-white">AlertNow</span>
-              </div>
-              <p className="text-slate-500 dark:text-slate-400">Intelligent alert management for modern teams.</p>
-            </div>
-            <div>
-              <h3 className="font-bold mb-4 text-slate-900 dark:text-white">Product</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a
-                    href="#features"
-                    className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400"
-                  >
-                    Features
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#use-cases"
-                    className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400"
-                  >
-                    Use Cases
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#pricing"
-                    className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400"
-                  >
-                    Pricing
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400"
-                  >
-                    Roadmap
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-bold mb-4 text-slate-900 dark:text-white">Resources</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400"
-                  >
-                    Documentation
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400"
-                  >
-                    API Reference
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400"
-                  >
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400"
-                  >
-                    Community
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-bold mb-4 text-slate-900 dark:text-white">Company</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400"
-                  >
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400"
-                  >
-                    Careers
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400"
-                  >
-                    Contact
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400"
-                  >
-                    Legal
-                  </a>
-                </li>
-              </ul>
             </div>
           </div>
-          <div className="border-t border-slate-200 dark:border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              © {new Date().getFullYear()} AlertNow. All rights reserved.
-            </p>
-            <div className="flex gap-4 mt-4 md:mt-0">
-              <a href="#" className="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    fillRule="evenodd"
-                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </a>
-              <a href="#" className="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    fillRule="evenodd"
-                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c5.51 0 10-4.48 10-10S17.51 2 12 2zm6.605 4.61a8.502 8.502 0 011.93 5.314c-.281-.054-3.101-.629-5.943-.271-.065-.141-.12-.293-.184-.445a25.416 25.416 0 00-.564-1.236c3.145-1.28 4.577-3.124 4.761-3.362zM12 3.475c2.17 0 4.154.813 5.662 2.148-.152.216-1.443 1.941-4.48 3.08-1.399-2.57-2.95-4.675-3.189-5A8.687 8.687 0 0112 3.475zm-3.633.803a53.896 53.896 0 013.167 4.935c-3.992 1.063-7.517 1.04-7.896 1.04a8.581 8.581 0 014.729-5.975zM3.453 12.01v-.26c.37.01 4.512.065 8.775-1.215.25.477.477.965.694 1.453-.109.033-.228.065-.336.098-4.404 1.42-6.747 5.303-6.942 5.629a8.522 8.522 0 01-2.19-5.705zM12 20.547a8.482 8.482 0 01-5.239-1.8c.152-.315 1.888-3.656 6.703-5.337.022-.01.033-.01.054-.022a35.318 35.318 0 011.823 6.475 8.4 8.4 0 01-3.341.684zm4.761-1.465c-.086-.52-.542-3.015-1.659-6.084 2.679-.423 5.022.271 5.314.369a8.468 8.468 0 01-3.655 5.715z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </a>
-              <a href="#" className="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                </svg>
-              </a>
-            </div>
+        </section>
+      </main>
+      <footer className="border-t py-6 md:py-0">
+        <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
+          <div className="flex items-center gap-2">
+            <Logo />
+            <p className="text-sm text-muted-foreground">© 2025 AlertNow. All rights reserved.</p>
+          </div>
+          <div className="flex gap-4">
+            <Link href="#" className="text-sm text-muted-foreground hover:underline underline-offset-4">
+              Terms
+            </Link>
+            <Link href="#" className="text-sm text-muted-foreground hover:underline underline-offset-4">
+              Privacy
+            </Link>
+            <Link href="#" className="text-sm text-muted-foreground hover:underline underline-offset-4">
+              Contact
+            </Link>
           </div>
         </div>
       </footer>
-
-      {/* Waitlist Modal */}
-      <Dialog open={showWaitlistModal} onOpenChange={setShowWaitlistModal}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Join the AlertNow Waitlist</DialogTitle>
-            <DialogDescription>
-              {selectedPlan === "Enterprise"
-                ? "Leave your details and our sales team will contact you shortly."
-                : "Be among the first to try AlertNow when we launch our beta."}
-            </DialogDescription>
-          </DialogHeader>
-
-          {formSubmitted ? (
-            <div className="py-6 text-center space-y-4">
-              <div className="mx-auto w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                <Check className="h-6 w-6 text-green-600" />
-              </div>
-              <h3 className="text-lg font-medium">Thank you for joining our waitlist!</h3>
-              <p className="text-muted-foreground">We'll notify you when AlertNow is ready for you to try.</p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmitWaitlist}>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    placeholder="Your name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="your.email@example.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="company">Company</Label>
-                  <Input
-                    id="company"
-                    placeholder="Your company name"
-                    value={formData.company}
-                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label>Selected Plan</Label>
-                  <div className="p-2 bg-muted rounded-md">{selectedPlan} Plan</div>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setShowWaitlistModal(false)}>
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 dark:text-slate-300"
-                >
-                  Join Waitlist
-                </Button>
-              </DialogFooter>
-            </form>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }
-;<style jsx global>{`
-  .bg-grid-slate-100 {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(226 232 240 / 0.8)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
-  }
-  
-  .bg-grid-slate-700 {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(51 65 85 / 0.8)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
-  }
-`}</style>
 

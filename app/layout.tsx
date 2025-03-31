@@ -22,6 +22,11 @@ export default function LandingLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
+        <meta property="og:image" content="<generated>" />
+        <meta property="og:image:alt" content="AlertNow" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
       </head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem={false} disableTransitionOnChange forcedTheme={undefined}>
