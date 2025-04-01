@@ -39,10 +39,12 @@ export default function DocumentationPage() {
                 </Link>
               </li>
             </ul>
-            <div className="font-medium text-sm pt-4">Integrations</div>
+            <div className="font-medium text-sm pt-4">Integrations  <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+                    Soon
+                </span></div>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="#discord" className="text-muted-foreground hover:text-primary">
+                <Link href="#" className="text-muted-foreground hover:text-primary">
                   Discord
                 </Link>
               </li>
@@ -53,23 +55,17 @@ export default function DocumentationPage() {
               </li>
               <li>
                 <Link href="#slack" className="text-muted-foreground hover:text-primary">
-                  Slack <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
-                    Soon
-                </span>
+                  Slack
                 </Link>
               </li>
               <li>
                 <Link href="#email" className="text-muted-foreground hover:text-primary">
-                  Email <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
-                    Soon
-                </span>
+                  Email
                 </Link>
               </li>
               <li>
                 <Link href="#sms" className="text-muted-foreground hover:text-primary">
-                  SMS <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
-                    Soon
-                </span>
+                  SMS 
                 </Link>
               </li>
             </ul>
@@ -517,9 +513,7 @@ function checkDatabaseConnection() {
                 <ul className="list-disc list-inside space-y-1">
                   <li>Alert level (color-coded)</li>
                   <li>Alert title and message</li>
-                  <li>Timestamp</li>
                   <li>Additional data in an expandable section</li>
-                  <li>Quick action buttons</li>
                 </ul>
               </div>
 

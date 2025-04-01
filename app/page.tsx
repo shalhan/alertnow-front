@@ -52,33 +52,21 @@ export default function LandingPage() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 pt-4">
                   <Button size="lg" className="text-lg">
-                    Start Now - FREE
+                    <Link href="/signup">
+                      Start Now - FREE
+                    </Link>
                   </Button>
                 </div>
               </div>
-              <div className="relative h-[350px] w-full rounded-xl p-4 flex items-center justify-center">
-              <MockNotification 
-                className={"md:left-40 bottom-2"}
-                name={"Discord"}
-                timeout={200}
-                renderIcon={() => (
-                  <FaDiscord  aria-hidden="true" className="size-6 text-blue-800" />
-                )} />
-              <MockNotification 
-                className={"md:left-20 bottom-34"}
-                name={"Slack"}
-                timeout={300}
-                renderIcon={() => (
-                  <FaSlack  aria-hidden="true" className="size-6 text-red-500" />
-                )} />
-
-              <MockNotification 
-                className={"md:left-0 bottom-60"}
-                name={"Telegram"}
-                timeout={400}
-                renderIcon={() => (
-                  <FaTelegram  aria-hidden="true" className="size-6 text-blue-400" />
-                )} />
+              <div className="relative w-full rounded-xl p-4 flex items-center justify-center">
+                <img src="/cover2.png?height=600&width=800" alt="AlertNow Dashboard" className="w-full" />
+                <MockNotification 
+                  className={"left-26 bottom-0"}
+                  name={"Discord"}
+                  timeout={200}
+                  renderIcon={() => (
+                    <FaDiscord  aria-hidden="true" className="size-6 text-blue-800" />
+                  )} />
               </div>
             </div>
           </div>

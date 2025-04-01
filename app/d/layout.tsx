@@ -1,7 +1,7 @@
 "use client"
 import { useState, type ReactNode } from "react"
 import Link from "next/link"
-import { BarChart3, Bell, Home, Key, Settings, Users, LogOut, ChevronDown } from "lucide-react"
+import { BarChart3, Bell, Home, Key, Settings, Users, LogOut, ChevronDown, MessageSquare } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast"
 import { auth } from "@/lib/firebase"
 import { useRouter } from "next/navigation"
 import { Logo } from "@/components/ui/logo"
+import { DevelopmentNotice } from "@/components/development-notice"
 
 interface DashboardLayoutProps {
   children: ReactNode
@@ -37,7 +38,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             title: "Signed out",
             description: "You have been successfully signed out.",
           })
-          router.push("/login")
+          router.push("/")
         } catch (error) {
           console.error("Sign out error:", error)
           toast({
@@ -72,19 +73,26 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 Dashboard
               </Link>
               <Link
+                href="/d/channels"
+                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium ${pathname == "/d/channels" ? 'bg-accent text-accent-foreground' : ' text-muted-foreground'}`}
+              >
+                <MessageSquare className="h-4 w-4" />
+                Channels
+              </Link>
+              <Link
                 href="/d/alert-rules"
                 className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium ${pathname == "/d/alert-rules" ? 'bg-accent text-accent-foreground' : ' text-muted-foreground'}`}
               >
                 <BarChart3 className="h-4 w-4" />
                 Alert Rules
               </Link>
-              <Link
+              {/* <Link
                 href="/d/api-keys"
                 className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium ${pathname == "/d/api-keys" ? 'bg-accent text-accent-foreground' : ' text-muted-foreground'}`}
               >
                 <Key className="h-4 w-4" />
                 API Keys
-              </Link>
+              </Link> */}
               <Link
                 href="/d/team"
                 className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium ${pathname == "/d/team" ? 'bg-accent text-accent-foreground' : ' text-muted-foreground'}`}
@@ -170,6 +178,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <main className="flex-1 md:ml-64 pt-14 md:pt-0">
         <div className="container py-6 md:py-8">{children}</div>
       </main>
+
+      <DevelopmentNotice />
     </div>
   )
 }
