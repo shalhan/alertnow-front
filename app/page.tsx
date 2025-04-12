@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { Logo } from "@/components/ui/logo"
 import { BellRing, Copy, Check } from "lucide-react"
 import { useState } from "react"
 
@@ -19,7 +20,7 @@ export default function LandingPage() {
       <div className="flex-1 bg-gradient-to-br from-primary/5 to-primary/10 flex flex-col justify-center px-6 py-12 md:px-12 lg:px-20">
         <div className="max-w-xl mx-auto md:mx-0">
           <div className="flex items-center gap-2 mb-6">
-            <BellRing className="h-8 w-8 text-primary" />
+            <Logo />
             <span className="text-2xl font-bold">AlertNow</span>
           </div>
 
