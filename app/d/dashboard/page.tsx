@@ -13,12 +13,22 @@ import {
   Search,
   ChevronRight,
   Loader2,
+  Filter,
+  X,
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu"
+import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
@@ -560,6 +570,17 @@ const allAlerts = [
   },
 ]
 
+// Extract unique service names from alerts
+const availableServices = Array.from(new Set(allAlerts.map((alert) => alert.service)))
+  .filter(Boolean)
+  .sort()
+
+// Sample environments
+const availableEnvironments = ["production", "staging", "development", "testing"]
+
+// Log levels
+const availableLogLevels = ["info", "warn", "error", "critical"]
+
 export default function DashboardPage() {
   const [filter, setFilter] = useState("all")
   const [dateRange, setDateRange] = useState("7days")
@@ -567,6 +588,10 @@ export default function DashboardPage() {
   const [expandedRows, setExpandedRows] = useState<number[]>([])
   const [itemsPerPage, setItemsPerPage] = useState(5)
   const [isLoading, setIsLoading] = useState(false)
+
+  const [serviceFilter, setServiceFilter] = useState<string[]>([])
+  const [environmentFilter, setEnvironmentFilter] = useState<string[]>([])
+  const [logLevelFilter, setLogLevelFilter] = useState<string[]>([])
 
   // Filter alerts based on status and search query
   const filteredAlerts = allAlerts.filter((alert) => {
@@ -577,8 +602,23 @@ export default function DashboardPage() {
 
     const matchesSearch = alert.message.toLowerCase().includes(searchQuery.toLowerCase())
 
-    return matchesStatus && matchesSearch
+    // New filters
+    const matchesService = serviceFilter.length === 0 || (alert.service && serviceFilter.includes(alert.service))
+    const matchesEnvironment =
+      environmentFilter.length === 0 ||
+      (alert.data?.context?.environment && environmentFilter.includes(alert.data.context.environment))
+    const matchesLogLevel = logLevelFilter.length === 0 || (alert.level && logLevelFilter.includes(alert.level))
+
+    return matchesStatus && matchesSearch && matchesService && matchesEnvironment && matchesLogLevel
   })
+
+  // Toggle row expansion
+  const toggleRowExpansion = (id: number) => {
+    setExpandedRows((prev) => (prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]))
+  }
+
+  // Check if row is expanded
+  const isRowExpanded = (id: number) => expandedRows.includes(id)
 
   // Get paginated alerts
   const paginatedAlerts = filteredAlerts.slice(0, itemsPerPage)
@@ -598,14 +638,6 @@ export default function DashboardPage() {
     console.log(`Resolving alert ${id}`)
     // In a real app, you would update the alert status in your database
   }
-
-  // Toggle row expansion
-  const toggleRowExpansion = (id: number) => {
-    setExpandedRows((prev) => (prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]))
-  }
-
-  // Check if row is expanded
-  const isRowExpanded = (id: number) => expandedRows.includes(id)
 
   // Get log level badge variant
   const getLogLevelBadge = (level: string) => {
@@ -648,6 +680,41 @@ export default function DashboardPage() {
       setItemsPerPage((prev) => prev + 5)
       setIsLoading(false)
     }, 800)
+  }
+
+  // Add a function to handle toggling filters
+  const toggleFilter = (type: "service" | "environment" | "level", value: string) => {
+    switch (type) {
+      case "service":
+        setServiceFilter((prev) => (prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]))
+        break
+      case "environment":
+        setEnvironmentFilter((prev) => (prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]))
+        break
+      case "level":
+        setLogLevelFilter((prev) => (prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]))
+        break
+    }
+  }
+
+  // Add a function to clear all filters
+  const clearAllFilters = () => {
+    setServiceFilter([])
+    setEnvironmentFilter([])
+    setLogLevelFilter([])
+    setSearchQuery("")
+    setFilter("all")
+  }
+
+  // Add a function to get the active filter count
+  const getActiveFilterCount = () => {
+    return (
+      serviceFilter.length +
+      environmentFilter.length +
+      logLevelFilter.length +
+      (searchQuery ? 1 : 0) +
+      (filter !== "all" ? 1 : 0)
+    )
   }
 
   return (
@@ -727,7 +794,7 @@ export default function DashboardPage() {
         <CardHeader>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle>Recent Alerts</CardTitle>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <div className="relative w-full sm:w-64">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -738,6 +805,92 @@ export default function DashboardPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
+
+              {/* Advanced Filters */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="flex items-center gap-1">
+                    <Filter className="h-4 w-4" />
+                    <span>Filters</span>
+                    {getActiveFilterCount() > 0 && (
+                      <Badge variant="secondary" className="ml-1 rounded-full px-1 text-xs">
+                        {getActiveFilterCount()}
+                      </Badge>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[220px]">
+                  <DropdownMenuLabel>Filter Alerts</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+
+                  {/* Service Filter */}
+                  <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">Service</DropdownMenuLabel>
+                  {availableServices.map((service) => (
+                    <DropdownMenuCheckboxItem
+                      key={service}
+                      checked={serviceFilter.includes(service)}
+                      onCheckedChange={() => toggleFilter("service", service)}
+                    >
+                      {service}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                  <DropdownMenuSeparator />
+
+                  {/* Environment Filter */}
+                  <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+                    Environment
+                  </DropdownMenuLabel>
+                  {availableEnvironments.map((env) => (
+                    <DropdownMenuCheckboxItem
+                      key={env}
+                      checked={environmentFilter.includes(env)}
+                      onCheckedChange={() => toggleFilter("environment", env)}
+                    >
+                      {env.charAt(0).toUpperCase() + env.slice(1)}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                  <DropdownMenuSeparator />
+
+                  {/* Log Level Filter */}
+                  <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">Log Level</DropdownMenuLabel>
+                  {availableLogLevels.map((level) => (
+                    <DropdownMenuCheckboxItem
+                      key={level}
+                      checked={logLevelFilter.includes(level)}
+                      onCheckedChange={() => toggleFilter("level", level)}
+                    >
+                      <div className="flex items-center">
+                        <div
+                          className={`w-2 h-2 rounded-full mr-2 ${
+                            level === "info"
+                              ? "bg-blue-500"
+                              : level === "warn"
+                                ? "bg-yellow-500"
+                                : level === "error"
+                                  ? "bg-red-500"
+                                  : "bg-purple-500"
+                          }`}
+                        ></div>
+                        {level.charAt(0).toUpperCase() + level.slice(1)}
+                      </div>
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                  <DropdownMenuSeparator />
+
+                  {/* Clear Filters */}
+                  {getActiveFilterCount() > 0 && (
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-sm font-normal h-8"
+                      onClick={clearAllFilters}
+                    >
+                      Clear all filters
+                    </Button>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Status Filter */}
               <Select value={filter} onValueChange={setFilter}>
                 <SelectTrigger className="w-[120px]">
                   <SelectValue placeholder="Filter" />
@@ -752,6 +905,85 @@ export default function DashboardPage() {
           </div>
         </CardHeader>
         <CardContent>
+          {getActiveFilterCount() > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {filter !== "all" && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  Status: {filter}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-4 w-4 ml-1 hover:bg-muted-foreground/20"
+                    onClick={() => setFilter("all")}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </Badge>
+              )}
+
+              {searchQuery && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  Search: {searchQuery}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-4 w-4 ml-1 hover:bg-muted-foreground/20"
+                    onClick={() => setSearchQuery("")}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </Badge>
+              )}
+
+              {serviceFilter.map((service) => (
+                <Badge key={service} variant="secondary" className="flex items-center gap-1">
+                  Service: {service}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-4 w-4 ml-1 hover:bg-muted-foreground/20"
+                    onClick={() => toggleFilter("service", service)}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </Badge>
+              ))}
+
+              {environmentFilter.map((env) => (
+                <Badge key={env} variant="secondary" className="flex items-center gap-1">
+                  Environment: {env}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-4 w-4 ml-1 hover:bg-muted-foreground/20"
+                    onClick={() => toggleFilter("environment", env)}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </Badge>
+              ))}
+
+              {logLevelFilter.map((level) => (
+                <Badge key={level} variant="secondary" className="flex items-center gap-1">
+                  Level: {level}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-4 w-4 ml-1 hover:bg-muted-foreground/20"
+                    onClick={() => toggleFilter("level", level)}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </Badge>
+              ))}
+
+              {getActiveFilterCount() > 1 && (
+                <Button variant="ghost" size="sm" className="text-xs h-7" onClick={clearAllFilters}>
+                  Clear all
+                </Button>
+              )}
+            </div>
+          )}
           {filteredAlerts.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <div className="rounded-full bg-muted p-3 mb-4">
